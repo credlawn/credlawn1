@@ -1,0 +1,39 @@
+
+
+
+@media (min-width: 1024px) {
+    .section-head,
+    .section-body,
+    .form-footer {
+        max-width: 90% !important;
+        width: 90% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .timeline-content {
+        max-width: 100% !important;
+    }
+}
+
+.btn-primary {
+    background-color: #0066cc !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    padding: 7px 18px !important;
+}
+
+.layout-side-section.right,
+.body-sidebar {
+    display: none !important;
+}
+
+/* Hide extra icons in the activity section */
+.list-row-activity .indicator,
+.list-row-activity .comment-count,
+.list-row-activity .mx-2 {
+    display: none !important;
+}
+

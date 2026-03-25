@@ -25,8 +25,8 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/credlawn/css/credlawn.css"
-# app_include_js = "/assets/credlawn/js/credlawn.js"
+app_include_css = "/assets/credlawn/css/credlawn.css"
+app_include_js = "/assets/credlawn/js/credlawn.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/credlawn/css/credlawn.css"

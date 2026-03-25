@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-25 12:46:35.665672",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "dump_type",
+  "column_break_otfb",
+  "dump_till",
+  "column_break_hxdv",
+  "column_break_oyzl",
+  "section_break_ukvl",
+  "attach_dump"
+ ],
+ "fields": [
+  {
+   "fieldname": "dump_type",
+   "fieldtype": "Select",
+   "label": "Dump Type",
+   "options": "\nAdobe\nDSA"
+  },
+  {
+   "fieldname": "column_break_otfb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dump_till",
+   "fieldtype": "Date",
+   "label": "Dump Till"
+  },
+  {
+   "fieldname": "column_break_hxdv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_oyzl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ukvl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attach_dump",
+   "fieldtype": "Attach",
+   "label": "Attach Dump"
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-25 12:47:49.783577",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Import Dump",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

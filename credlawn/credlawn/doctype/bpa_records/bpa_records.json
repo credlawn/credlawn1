@@ -1,0 +1,197 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-25 17:29:16.366029",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_pwus",
+  "dsa_code",
+  "column_break_qfny",
+  "sm_code",
+  "column_break_vfzr",
+  "lc1_code",
+  "column_break_rwbg",
+  "lc2_code",
+  "employee_details_section",
+  "employee_name",
+  "column_break_vnyt",
+  "employee_code",
+  "column_break_huml",
+  "decision_date",
+  "column_break_aedy",
+  "decision_month",
+  "customer_details_section",
+  "customer_name",
+  "promo_code",
+  "column_break_qthe",
+  "mobile_no",
+  "product",
+  "column_break_lrom",
+  "arn_no",
+  "card_type",
+  "column_break_vpil",
+  "arn_date",
+  "customer_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "column_break_qthe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "label": "ARN No"
+  },
+  {
+   "fieldname": "column_break_lrom",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arn_date",
+   "fieldtype": "Date",
+   "label": "ARN Date"
+  },
+  {
+   "fieldname": "column_break_vpil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Data",
+   "label": "Customer Type"
+  },
+  {
+   "fieldname": "section_break_pwus",
+   "fieldtype": "Section Break",
+   "label": "DSA Details"
+  },
+  {
+   "fieldname": "dsa_code",
+   "fieldtype": "Data",
+   "label": "DSA Code"
+  },
+  {
+   "fieldname": "column_break_qfny",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sm_code",
+   "fieldtype": "Data",
+   "label": "SM Code"
+  },
+  {
+   "fieldname": "column_break_vfzr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lc1_code",
+   "fieldtype": "Data",
+   "label": "LC1 Code"
+  },
+  {
+   "fieldname": "column_break_rwbg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lc2_code",
+   "fieldtype": "Data",
+   "label": "LC2 Code"
+  },
+  {
+   "fieldname": "customer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_vnyt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_huml",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_aedy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decision_date",
+   "fieldtype": "Date",
+   "label": "Decision Date"
+  },
+  {
+   "fieldname": "decision_month",
+   "fieldtype": "Data",
+   "label": "Decision Month"
+  },
+  {
+   "fieldname": "promo_code",
+   "fieldtype": "Data",
+   "label": "Promo Code"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "card_type",
+   "fieldtype": "Data",
+   "label": "Card Type"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-25 17:39:02.242529",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "BPA Records",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

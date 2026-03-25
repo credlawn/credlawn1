@@ -1,0 +1,363 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-23 12:18:55.157177",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "arn_no",
+  "dsa_code",
+  "adobe_dump_date",
+  "column_break_yhzo",
+  "arn_date",
+  "lc1_code",
+  "dap_final_date",
+  "column_break_cnmj",
+  "customer_type",
+  "lc2_code",
+  "kyc_completion_date",
+  "column_break_yblq",
+  "ipa_status",
+  "sm_code",
+  "section_break_mmvp",
+  "customer_name",
+  "promo_code",
+  "card_type",
+  "column_break_nhwd",
+  "state",
+  "product_code",
+  "card_activation_status",
+  "column_break_fibp",
+  "pin_code",
+  "product_description",
+  "column_break_hvil",
+  "dap_final_flag",
+  "company_name",
+  "section_break_rbem",
+  "drop_off_reason",
+  "vkyc_expiry_date",
+  "current_stage",
+  "column_break_yhyi",
+  "idcom_status",
+  "vkyc_link",
+  "kyc_status",
+  "column_break_rpas",
+  "vkyc_status",
+  "final_decision",
+  "bkyc_status",
+  "column_break_gxer",
+  "kyc_type",
+  "final_decision_date",
+  "bkyc_reason",
+  "section_break_bdwm",
+  "decline_code",
+  "sm_remarks",
+  "column_break_fesp",
+  "decline_type",
+  "emil_curing",
+  "column_break_ltmx",
+  "decline_description",
+  "column_break_dtku",
+  "decline_category"
+ ],
+ "fields": [
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "label": "ARN No",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_yhzo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arn_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ARN Date"
+  },
+  {
+   "fieldname": "column_break_cnmj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Type",
+   "options": "\nNDB\nNTB\nOPM\nWL"
+  },
+  {
+   "fieldname": "column_break_yblq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ipa_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "IPA Status",
+   "options": "\nAPPROVE\nDECLINE"
+  },
+  {
+   "fieldname": "section_break_mmvp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "column_break_nhwd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "column_break_fibp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pin_code",
+   "fieldtype": "Data",
+   "label": "Pin Code"
+  },
+  {
+   "fieldname": "column_break_hvil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dap_final_flag",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "DAP Final Flag",
+   "options": "\nYes"
+  },
+  {
+   "fieldname": "dsa_code",
+   "fieldtype": "Data",
+   "label": "DSA Code"
+  },
+  {
+   "fieldname": "lc1_code",
+   "fieldtype": "Data",
+   "label": "LC1 Code"
+  },
+  {
+   "fieldname": "lc2_code",
+   "fieldtype": "Data",
+   "label": "LC2 Code"
+  },
+  {
+   "fieldname": "sm_code",
+   "fieldtype": "Data",
+   "label": "SM Code"
+  },
+  {
+   "fieldname": "section_break_rbem",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "drop_off_reason",
+   "fieldtype": "Data",
+   "label": "Drop off Reason"
+  },
+  {
+   "fieldname": "column_break_yhyi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "idcom_status",
+   "fieldtype": "Data",
+   "label": "IDCom Status"
+  },
+  {
+   "fieldname": "column_break_rpas",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gxer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vkyc_status",
+   "fieldtype": "Data",
+   "label": "VKYC Status"
+  },
+  {
+   "fieldname": "kyc_type",
+   "fieldtype": "Data",
+   "label": "KYC Type"
+  },
+  {
+   "fieldname": "vkyc_expiry_date",
+   "fieldtype": "Datetime",
+   "label": "VKYC Expiry Date"
+  },
+  {
+   "fieldname": "vkyc_link",
+   "fieldtype": "Data",
+   "label": "VKYC Link"
+  },
+  {
+   "fieldname": "promo_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Promo Code"
+  },
+  {
+   "fieldname": "product_code",
+   "fieldtype": "Data",
+   "label": "Product Code"
+  },
+  {
+   "fieldname": "final_decision",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Final Decision"
+  },
+  {
+   "fieldname": "final_decision_date",
+   "fieldtype": "Date",
+   "label": "Final Decision Date"
+  },
+  {
+   "fieldname": "current_stage",
+   "fieldtype": "Data",
+   "label": "Current Stage"
+  },
+  {
+   "fieldname": "kyc_status",
+   "fieldtype": "Data",
+   "label": "KYC Status"
+  },
+  {
+   "fieldname": "bkyc_status",
+   "fieldtype": "Data",
+   "label": "BKYC Status"
+  },
+  {
+   "fieldname": "bkyc_reason",
+   "fieldtype": "Data",
+   "label": "BKYC Reason"
+  },
+  {
+   "fieldname": "section_break_bdwm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "decline_code",
+   "fieldtype": "Data",
+   "label": "Decline Code"
+  },
+  {
+   "fieldname": "column_break_fesp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ltmx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dtku",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decline_type",
+   "fieldtype": "Data",
+   "label": "Decline Type"
+  },
+  {
+   "fieldname": "decline_description",
+   "fieldtype": "Data",
+   "label": "Decline Description "
+  },
+  {
+   "fieldname": "decline_category",
+   "fieldtype": "Data",
+   "label": "Decline Category"
+  },
+  {
+   "fieldname": "sm_remarks",
+   "fieldtype": "Data",
+   "label": "SM Remarks"
+  },
+  {
+   "fieldname": "emil_curing",
+   "fieldtype": "Data",
+   "label": "Emil Curing"
+  },
+  {
+   "fieldname": "adobe_dump_date",
+   "fieldtype": "Date",
+   "label": "Adobe Dump Date"
+  },
+  {
+   "fieldname": "product_description",
+   "fieldtype": "Data",
+   "label": "Product Description"
+  },
+  {
+   "fieldname": "dap_final_date",
+   "fieldtype": "Date",
+   "label": "DAP Final Date"
+  },
+  {
+   "fieldname": "kyc_completion_date",
+   "fieldtype": "Date",
+   "label": "KYC Completion Date"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name"
+  },
+  {
+   "fieldname": "card_type",
+   "fieldtype": "Data",
+   "label": "Card Type"
+  },
+  {
+   "fieldname": "card_activation_status",
+   "fieldtype": "Data",
+   "label": "Card Activation Status "
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-25 17:47:06.986608",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Adobe Dump",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name"
+}

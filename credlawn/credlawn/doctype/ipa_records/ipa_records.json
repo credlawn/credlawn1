@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-21 10:21:15.583956",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_name",
+  "mobile_no",
+  "date_of_birth",
+  "column_break_tquh",
+  "employee_name",
+  "employee_code",
+  "unique",
+  "column_break_pqeh",
+  "ip_status",
+  "arn_date",
+  "arn_no",
+  "arn_month"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "column_break_tquh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_pqeh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ip_status",
+   "fieldtype": "Select",
+   "label": "IP Status",
+   "options": "\nIP Approved\nIP Decline"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ARN No"
+  },
+  {
+   "fieldname": "unique",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Unique",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "arn_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "ARN Date"
+  },
+  {
+   "fieldname": "arn_month",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "ARN Month"
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-24 12:02:36.141567",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "IPA Records",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name"
+}
