@@ -6,4 +6,5 @@ from frappe.model.document import Document
 
 
 class BPARecords(Document):
-	pass
+	def autoname(self):
+		self.name = self.arn_no

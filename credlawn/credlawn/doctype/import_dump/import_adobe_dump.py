@@ -200,3 +200,22 @@ def execute_import():
 
 def publish_progress(percentage, message, failed=False):
     frappe.publish_realtime("adobe_import_progress", {"percentage": percentage, "message": message, "failed": failed})
+
+@frappe.whitelist()
+def clear_import_fields():
+    """Resets the Import Dump Single Doctype fields and deletes the attachment."""
+    import_doc = frappe.get_single("Import Dump")
+    file_url = import_doc.attach_dump
+    
+    if file_url:
+        # Delete associated File records to clean up storage
+        files = frappe.get_all("File", filters={"file_url": file_url})
+        for f in files:
+            frappe.delete_doc("File", f.name, ignore_permissions=True)
+            
+    import_doc.attach_dump = None
+    import_doc.dump_till = None
+    import_doc.dump_type = None
+    import_doc.save(ignore_permissions=True)
+    
+    return {"status": "success", "message": _("Form cleared and file deleted.")}

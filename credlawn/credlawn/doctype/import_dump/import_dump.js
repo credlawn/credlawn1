@@ -1,5 +1,13 @@
 frappe.ui.form.on("Import Dump", {
 	refresh(frm) {
+		// Set progress bar color to blue (Using more aggressive selector)
+		frappe.dom.set_style(`
+			.progress-bar, .frappe-progress .progress-bar, .progress-bar-inner { 
+				background-color: #2490ef !important; 
+				background: #2490ef !important;
+			}
+		`);
+
 		// Real-time progress listener
 		frappe.realtime.on('adobe_import_progress', (data) => {
 			if (data.failed) {
@@ -15,7 +23,7 @@ frappe.ui.form.on("Import Dump", {
 
 		frm.add_custom_button(__('Import Dump'), () => {
 			if (!frm.doc.attach_dump) return frappe.msgprint(__('Please attach an Excel file first.'));
-			
+
 			if (frm.doc.dump_type === 'Adobe') {
 				run_adobe_import_flow(frm);
 			} else if (frm.doc.dump_type === 'DSA') {
@@ -23,6 +31,20 @@ frappe.ui.form.on("Import Dump", {
 			} else {
 				frappe.msgprint(__('Invalid Dump Type selected.'));
 			}
+		});
+
+		frm.add_custom_button(__('Clear'), () => {
+			frappe.confirm(__('Are you sure you want to clear the form and delete the attached file?'), () => {
+				frappe.call({
+					method: 'credlawn.credlawn.doctype.import_dump.import_adobe_dump.clear_import_fields',
+					callback: (r) => {
+						if (r.message && r.message.status === 'success') {
+							frappe.show_alert({ message: r.message.message, indicator: 'green' });
+							frm.reload_doc();
+						}
+					}
+				});
+			});
 		});
 	}
 });
@@ -35,18 +57,18 @@ function run_adobe_import_flow(frm) {
 		method: 'credlawn.credlawn.doctype.import_dump.import_adobe_dump.validate_import_file',
 		callback: (r) => {
 			frappe.hide_progress();
-			
+
 			if (r.message) {
 				let res = r.message;
 				let msg = `<b>Total records discovered:</b> ${res.total_rows}<br><br>`;
-				
+
 				if (res.missing_headers && res.missing_headers.length > 0) {
 					msg += `<span style="color: red;"><b>Notice:</b> Found ${res.missing_headers.length} missing fields in Excel.</span><br>`;
 					msg += `<small>${res.missing_headers.join(', ')}</small><br><br>`;
 				} else {
 					msg += `All fields mapped successfully.<br><br>`;
 				}
-				
+
 				msg += `Do you want to proceed with the import?`;
 
 				frappe.confirm(msg, () => {
