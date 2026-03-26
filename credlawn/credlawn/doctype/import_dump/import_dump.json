@@ -18,7 +18,7 @@
    "fieldname": "dump_type",
    "fieldtype": "Select",
    "label": "Dump Type",
-   "options": "\nAdobe\nDSA"
+   "options": "\nAdobe\nDSA\nPayout\nDeduction"
   },
   {
    "fieldname": "column_break_otfb",
@@ -52,7 +52,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-03-25 12:47:49.783577",
+ "modified": "2026-03-26 18:08:41.617093",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Import Dump",

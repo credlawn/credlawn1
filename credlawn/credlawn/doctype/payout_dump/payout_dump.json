@@ -1,0 +1,304 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-26 16:40:47.159247",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "card_mapping_section",
+  "carding_month",
+  "payout_month",
+  "column_break_jakx",
+  "arn_no",
+  "decision_date",
+  "column_break_wynv",
+  "dsa_code",
+  "lc1_code",
+  "column_break_xyhb",
+  "sm_code",
+  "lc2_code",
+  "section_break_hwny",
+  "employee_name",
+  "column_break_jrat",
+  "employee_code",
+  "column_break_tstg",
+  "customer_name",
+  "column_break_urta",
+  "mobile_no",
+  "section_break_udom",
+  "city",
+  "employer",
+  "column_break_chbt",
+  "state",
+  "market",
+  "column_break_dtni",
+  "product",
+  "activation_type",
+  "column_break_cnvr",
+  "card_classification",
+  "section_break_enak",
+  "card_level_payout_100",
+  "column_break_lpzc",
+  "card_level_payout_80",
+  "column_break_zqnh",
+  "card_level_payout_20",
+  "column_break_vmxx",
+  "payout_computation",
+  "section_break_osgj",
+  "record_type",
+  "column_break_fepm",
+  "multiplier",
+  "column_break_wpeq",
+  "payout_slab",
+  "column_break_sebg"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_jakx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "label": "ARN No"
+  },
+  {
+   "fieldname": "column_break_wynv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xyhb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "carding_month",
+   "fieldtype": "Data",
+   "label": "Carding Month"
+  },
+  {
+   "fieldname": "payout_month",
+   "fieldtype": "Data",
+   "label": "Payout Month"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "dsa_code",
+   "fieldtype": "Data",
+   "label": "DSA Code"
+  },
+  {
+   "fieldname": "section_break_udom",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_chbt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dtni",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "column_break_cnvr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "card_classification",
+   "fieldtype": "Data",
+   "label": "Card Classification"
+  },
+  {
+   "fieldname": "decision_date",
+   "fieldtype": "Date",
+   "label": "Decision Date"
+  },
+  {
+   "fieldname": "employer",
+   "fieldtype": "Data",
+   "label": "Employer"
+  },
+  {
+   "fieldname": "market",
+   "fieldtype": "Data",
+   "label": "Market"
+  },
+  {
+   "fieldname": "section_break_enak",
+   "fieldtype": "Section Break",
+   "label": "Payout Details"
+  },
+  {
+   "fieldname": "card_level_payout_100",
+   "fieldtype": "Currency",
+   "label": "Card Level Payout 100%",
+   "precision": "0"
+  },
+  {
+   "fieldname": "column_break_lpzc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zqnh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_vmxx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "card_level_payout_80",
+   "fieldtype": "Currency",
+   "label": "Card Level Payout 80%",
+   "precision": "0"
+  },
+  {
+   "fieldname": "card_level_payout_20",
+   "fieldtype": "Currency",
+   "label": "Card Level Payout 20%",
+   "precision": "0"
+  },
+  {
+   "fieldname": "payout_computation",
+   "fieldtype": "Data",
+   "label": "Payout Computation"
+  },
+  {
+   "fieldname": "activation_type",
+   "fieldtype": "Data",
+   "label": "Activation Type"
+  },
+  {
+   "fieldname": "lc1_code",
+   "fieldtype": "Data",
+   "label": "LC1 Code"
+  },
+  {
+   "fieldname": "sm_code",
+   "fieldtype": "Data",
+   "label": "SM Code"
+  },
+  {
+   "fieldname": "lc2_code",
+   "fieldtype": "Data",
+   "label": "LC2 Code"
+  },
+  {
+   "fieldname": "section_break_hwny",
+   "fieldtype": "Section Break",
+   "label": "Employee Mapping"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_jrat",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_tstg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "column_break_urta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "section_break_osgj",
+   "fieldtype": "Section Break",
+   "label": "Slab & Multiplier"
+  },
+  {
+   "fieldname": "multiplier",
+   "fieldtype": "Float",
+   "label": "Multiplier",
+   "precision": "0"
+  },
+  {
+   "fieldname": "column_break_fepm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_wpeq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sebg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "record_type",
+   "fieldtype": "Select",
+   "label": "Record Type",
+   "options": "\nPayout\nDeduction"
+  },
+  {
+   "fieldname": "payout_slab",
+   "fieldtype": "Float",
+   "label": "Payout Slab",
+   "precision": "1"
+  },
+  {
+   "fieldname": "card_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "Card Mapping"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-26 18:07:59.283645",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Payout Dump",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
