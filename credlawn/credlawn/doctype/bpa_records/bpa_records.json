@@ -7,6 +7,7 @@
  "field_order": [
   "section_break_pwus",
   "dsa_code",
+  "dsa_dump_date",
   "column_break_qfny",
   "sm_code",
   "column_break_vfzr",
@@ -20,7 +21,7 @@
   "column_break_huml",
   "decision_date",
   "column_break_aedy",
-  "decision_month",
+  "card_activation_status",
   "customer_details_section",
   "customer_name",
   "promo_code",
@@ -32,12 +33,27 @@
   "card_type",
   "column_break_vpil",
   "arn_date",
-  "customer_type"
+  "customer_type",
+  "dsa_dump_mapping_section",
+  "dsa_dump_verified",
+  "column_break_ijnf",
+  "seg_id",
+  "column_break_xugq",
+  "product_in_dsa_dump",
+  "column_break_zaac",
+  "activation_status",
+  "section_break_itjv",
+  "decision_month",
+  "column_break_xqrk",
+  "column_break_gsuz",
+  "column_break_zkgk"
  ],
  "fields": [
   {
    "fieldname": "customer_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer Name"
   },
   {
@@ -47,7 +63,8 @@
   {
    "fieldname": "arn_no",
    "fieldtype": "Data",
-   "label": "ARN No"
+   "label": "ARN No",
+   "search_index": 1
   },
   {
    "fieldname": "column_break_lrom",
@@ -117,6 +134,8 @@
   {
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Employee Name"
   },
   {
@@ -139,11 +158,14 @@
   {
    "fieldname": "decision_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Decision Date"
   },
   {
    "fieldname": "decision_month",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Decision Month"
   },
   {
@@ -165,12 +187,78 @@
    "fieldname": "mobile_no",
    "fieldtype": "Data",
    "label": "Mobile No"
+  },
+  {
+   "fieldname": "card_activation_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Card Activation Status"
+  },
+  {
+   "fieldname": "section_break_itjv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_xqrk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gsuz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zkgk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dsa_dump_verified",
+   "fieldtype": "Data",
+   "label": "DSA Dump Verified"
+  },
+  {
+   "fieldname": "dsa_dump_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "DSA Dump Mapping"
+  },
+  {
+   "fieldname": "column_break_ijnf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "seg_id",
+   "fieldtype": "Data",
+   "label": "SEG ID"
+  },
+  {
+   "fieldname": "column_break_xugq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "product_in_dsa_dump",
+   "fieldtype": "Data",
+   "label": "Product in DSA Dump"
+  },
+  {
+   "fieldname": "column_break_zaac",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "activation_status",
+   "fieldtype": "Data",
+   "label": "Activation Status"
+  },
+  {
+   "fieldname": "dsa_dump_date",
+   "fieldtype": "Date",
+   "label": "DSA Dump Date"
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-25 17:39:02.242529",
+ "modified": "2026-03-26 12:30:15.517177",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "BPA Records",

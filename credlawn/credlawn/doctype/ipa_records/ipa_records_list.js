@@ -40,6 +40,20 @@ frappe.listview_settings['IPA Records'] = {
             );
         });
 
+        listview.page.add_inner_button(__('Re-map Employee'), function () {
+            frappe.show_progress(__('Re-mapping Data'), 0, 100, __('Fetching matches from Adobe and DSA Dumps...'));
+            frappe.call({
+                method: 'credlawn.credlawn.doctype.ipa_records.remap_employee.remap_all_data',
+                callback: function (r) {
+                    frappe.hide_progress();
+                    if (r.message) {
+                        frappe.msgprint(r.message);
+                        listview.refresh();
+                    }
+                }
+            });
+        }, __('Task'));
+
         listview.page.add_inner_button(__('Full Sync'), function () {
             frappe.confirm(
                 __('Are you sure you want to perform a Full Sync? This will re-check all records from Pocketbase regardless of the last sync time.'),

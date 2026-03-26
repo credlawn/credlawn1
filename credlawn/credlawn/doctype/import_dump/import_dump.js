@@ -1,6 +1,6 @@
 frappe.ui.form.on("Import Dump", {
 	refresh(frm) {
-		// Set progress bar color to blue (Using more aggressive selector)
+		// Set progress bar color to blue for brand consistency
 		frappe.dom.set_style(`
 			.progress-bar, .frappe-progress .progress-bar, .progress-bar-inner { 
 				background-color: #2490ef !important; 
@@ -8,26 +8,23 @@ frappe.ui.form.on("Import Dump", {
 			}
 		`);
 
-		// Real-time progress listener
+		// Adobe Real-time progress listener
 		frappe.realtime.on('adobe_import_progress', (data) => {
-			if (data.failed) {
-				frappe.show_progress(__('Import Error'), 100, 100, data.message);
-				setTimeout(() => frappe.hide_progress(), 5000);
-			} else {
-				frappe.show_progress(__('Importing Adobe Dump'), data.percentage, 100, data.message);
-				if (data.percentage >= 100) {
-					setTimeout(() => { frappe.hide_progress(); frm.reload_doc(); }, 5000);
-				}
-			}
+			handle_import_progress(frm, data, __('Importing Adobe Dump'));
+		});
+
+		// DSA Real-time progress listener
+		frappe.realtime.on('dsa_import_progress', (data) => {
+			handle_import_progress(frm, data, __('Importing DSA Dump'));
 		});
 
 		frm.add_custom_button(__('Import Dump'), () => {
 			if (!frm.doc.attach_dump) return frappe.msgprint(__('Please attach an Excel file first.'));
 
 			if (frm.doc.dump_type === 'Adobe') {
-				run_adobe_import_flow(frm);
+				run_import_flow(frm, 'adobe_dump');
 			} else if (frm.doc.dump_type === 'DSA') {
-				frappe.msgprint(__('DSA Import logic is pending implementation.'));
+				run_import_flow(frm, 'dsa_dump');
 			} else {
 				frappe.msgprint(__('Invalid Dump Type selected.'));
 			}
@@ -49,18 +46,41 @@ frappe.ui.form.on("Import Dump", {
 	}
 });
 
-function run_adobe_import_flow(frm) {
-	// Starting validation with show_progress for consistency
-	frappe.show_progress(__('Validating Excel'), 0, 100, __('Counting records and checking fields...'));
+/**
+ * Handles real-time progress updates for both Adobe and DSA imports
+ */
+function handle_import_progress(frm, data, title) {
+	if (data.failed) {
+		frappe.show_progress(__('Import Error'), 100, 100, data.message);
+		setTimeout(() => frappe.hide_progress(), 5000);
+	} else {
+		frappe.show_progress(title, data.percentage, 100, data.message);
+		if (data.percentage >= 100) {
+			setTimeout(() => { 
+				frappe.hide_progress(); 
+				frm.reload_doc(); 
+			}, 5000);
+		}
+	}
+}
+
+/**
+ * General function to handle the import flow for different dump types
+ */
+function run_import_flow(frm, module_name) {
+	const python_base = `credlawn.credlawn.doctype.import_dump.import_${module_name}`;
+	const label_title = module_name.includes('adobe') ? __('Adobe Dump') : __('DSA Dump');
+
+	frappe.show_progress(__('Validating Excel'), 0, 100, __('Checking fields and filtration rules...'));
 
 	frappe.call({
-		method: 'credlawn.credlawn.doctype.import_dump.import_adobe_dump.validate_import_file',
+		method: `${python_base}.validate_import_file`,
 		callback: (r) => {
 			frappe.hide_progress();
 
 			if (r.message) {
 				let res = r.message;
-				let msg = `<b>Total records discovered:</b> ${res.total_rows}<br><br>`;
+				let msg = `<b>Eligible records discovered:</b> ${res.total_rows}<br><br>`;
 
 				if (res.missing_headers && res.missing_headers.length > 0) {
 					msg += `<span style="color: red;"><b>Notice:</b> Found ${res.missing_headers.length} missing fields in Excel.</span><br>`;
@@ -69,14 +89,14 @@ function run_adobe_import_flow(frm) {
 					msg += `All fields mapped successfully.<br><br>`;
 				}
 
-				msg += `Do you want to proceed with the import?`;
+				msg += `Do you want to proceed with the ${label_title} import?`;
 
 				frappe.confirm(msg, () => {
-					// User confirmed: Show progress bar immediately and then start background job
-					frappe.show_progress(__('Importing Adobe Dump'), 1, 100, __('Initializing import...'));
+					// User confirmed: Show progress immediately
+					frappe.show_progress(__('Importing ' + label_title), 1, 100, __('Initializing background job...'));
 
 					frappe.call({
-						method: 'credlawn.credlawn.doctype.import_dump.import_adobe_dump.run_import_sample',
+						method: `${python_base}.run_import_sample`,
 						callback: function (r) {
 							if (r.message && r.message.status === 'success') {
 								// Background job is now enqueued
@@ -85,7 +105,6 @@ function run_adobe_import_flow(frm) {
 					});
 				});
 			}
-		},
-		error: () => d.hide()
+		}
 	});
 }

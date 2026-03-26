@@ -5,50 +5,31 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "arn_no",
-  "dsa_code",
-  "adobe_dump_date",
-  "column_break_yhzo",
-  "arn_date",
-  "lc1_code",
-  "dap_final_date",
-  "column_break_cnmj",
-  "customer_type",
-  "lc2_code",
-  "kyc_completion_date",
-  "column_break_yblq",
-  "ipa_status",
-  "sm_code",
-  "section_break_mmvp",
-  "customer_name",
-  "promo_code",
-  "card_type",
-  "column_break_nhwd",
-  "state",
-  "product_code",
-  "card_activation_status",
-  "column_break_fibp",
-  "pin_code",
-  "product_description",
-  "column_break_hvil",
-  "dap_final_flag",
-  "company_name",
-  "section_break_rbem",
-  "drop_off_reason",
-  "vkyc_expiry_date",
-  "current_stage",
-  "column_break_yhyi",
-  "idcom_status",
-  "vkyc_link",
-  "kyc_status",
-  "column_break_rpas",
-  "vkyc_status",
+  "section_break_otde",
+  "employee_name",
   "final_decision",
-  "bkyc_status",
-  "column_break_gxer",
-  "kyc_type",
+  "customer_type",
+  "column_break_xzho",
+  "customer_name",
+  "current_stage",
+  "arn_no",
+  "column_break_tngq",
+  "mobile_no",
   "final_decision_date",
-  "bkyc_reason",
+  "adobe_dump_date",
+  "column_break_qtqx",
+  "ipa_status",
+  "dap_final_flag",
+  "card_activation_status",
+  "kyc_status_section",
+  "kyc_status",
+  "kyc_type",
+  "column_break_xwdz",
+  "idcom_status",
+  "column_break_uvto",
+  "vkyc_status",
+  "column_break_bbkn",
+  "bkyc_status",
   "section_break_bdwm",
   "decline_code",
   "sm_remarks",
@@ -57,8 +38,40 @@
   "emil_curing",
   "column_break_ltmx",
   "decline_description",
+  "decision_month",
   "column_break_dtku",
-  "decline_category"
+  "decline_category",
+  "section_break_rbem",
+  "drop_off_reason",
+  "column_break_yhyi",
+  "vkyc_link",
+  "column_break_rpas",
+  "vkyc_expiry_date",
+  "column_break_gxer",
+  "bkyc_reason",
+  "section_break_mmvp",
+  "promo_code",
+  "card_type",
+  "column_break_nhwd",
+  "state",
+  "product_code",
+  "column_break_fibp",
+  "pin_code",
+  "product_description",
+  "column_break_hvil",
+  "company_name",
+  "section_break_czog",
+  "dsa_code",
+  "dap_final_date",
+  "column_break_yhzo",
+  "lc1_code",
+  "kyc_completion_date",
+  "column_break_cnmj",
+  "arn_date",
+  "lc2_code",
+  "column_break_yblq",
+  "sm_code",
+  "employee_code"
  ],
  "fields": [
   {
@@ -84,11 +97,10 @@
   },
   {
    "fieldname": "customer_type",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Customer Type",
-   "options": "\nNDB\nNTB\nOPM\nWL"
+   "label": "Customer Type"
   },
   {
    "fieldname": "column_break_yblq",
@@ -104,7 +116,8 @@
   },
   {
    "fieldname": "section_break_mmvp",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Product Details"
   },
   {
    "fieldname": "customer_name",
@@ -163,7 +176,8 @@
   },
   {
    "fieldname": "section_break_rbem",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "VKYC Details"
   },
   {
    "fieldname": "drop_off_reason",
@@ -252,7 +266,8 @@
   },
   {
    "fieldname": "section_break_bdwm",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Decline Details"
   },
   {
    "fieldname": "decline_code",
@@ -330,12 +345,71 @@
    "fieldname": "card_activation_status",
    "fieldtype": "Data",
    "label": "Card Activation Status "
+  },
+  {
+   "fieldname": "decision_month",
+   "fieldtype": "Data",
+   "label": "Decision Month"
+  },
+  {
+   "fieldname": "section_break_otde",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_xzho",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_tngq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "column_break_qtqx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_czog",
+   "fieldtype": "Section Break",
+   "label": "DSA Mapping Details"
+  },
+  {
+   "fieldname": "kyc_status_section",
+   "fieldtype": "Section Break",
+   "label": "KYC Status"
+  },
+  {
+   "fieldname": "column_break_xwdz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uvto",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bbkn",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-25 17:47:06.986608",
+ "modified": "2026-03-26 12:48:25.083123",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Adobe Dump",

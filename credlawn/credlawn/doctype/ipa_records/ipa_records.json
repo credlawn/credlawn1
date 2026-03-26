@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "customer_details_section",
   "customer_name",
   "mobile_no",
   "date_of_birth",
@@ -16,7 +17,19 @@
   "ip_status",
   "arn_date",
   "arn_no",
-  "arn_month"
+  "arn_month",
+  "bank_status_section",
+  "bank_status",
+  "column_break_svbq",
+  "bank_status_date",
+  "column_break_djbi",
+  "bank_status_month",
+  "section_break_czww",
+  "adobe_dump_validated",
+  "column_break_qjds",
+  "final_approved_count_verified",
+  "column_break_xnvm",
+  "dsa_dump_validated"
  ],
  "fields": [
   {
@@ -67,7 +80,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "ARN No"
+   "label": "ARN No",
+   "search_index": 1
   },
   {
    "fieldname": "unique",
@@ -89,13 +103,74 @@
    "fieldtype": "Data",
    "in_standard_filter": 1,
    "label": "ARN Month"
+  },
+  {
+   "fieldname": "section_break_czww",
+   "fieldtype": "Section Break",
+   "label": "Data Validation"
+  },
+  {
+   "fieldname": "adobe_dump_validated",
+   "fieldtype": "Data",
+   "label": "Adobe Dump Validated"
+  },
+  {
+   "fieldname": "column_break_qjds",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xnvm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "final_approved_count_verified",
+   "fieldtype": "Data",
+   "label": "Final Approved Count Verified"
+  },
+  {
+   "fieldname": "dsa_dump_validated",
+   "fieldtype": "Data",
+   "label": "DSA Dump Validated"
+  },
+  {
+   "fieldname": "customer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "bank_status_section",
+   "fieldtype": "Section Break",
+   "label": "Bank Status"
+  },
+  {
+   "fieldname": "bank_status",
+   "fieldtype": "Data",
+   "label": "Bank Status"
+  },
+  {
+   "fieldname": "column_break_svbq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_status_date",
+   "fieldtype": "Date",
+   "label": "Bank Status Date"
+  },
+  {
+   "fieldname": "column_break_djbi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_status_month",
+   "fieldtype": "Data",
+   "label": "Bank Status Month"
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-24 12:02:36.141567",
+ "modified": "2026-03-26 12:30:41.580761",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "IPA Records",

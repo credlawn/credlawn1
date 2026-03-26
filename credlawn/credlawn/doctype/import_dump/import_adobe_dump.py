@@ -46,6 +46,15 @@ FIELD_MAPPING = {
     "card_activation_status": "Card Activation Staus"
 }
 
+# Priority Ranking for Activation Status (Higher = More Active/Final)
+ACTIVATION_RANK = {
+    "Inactive": 1,
+    "V+Active": 2,
+    "Txn Active": 3,
+    "Txn Active - Rs 100": 4,
+    "Card closed": 5 # Always allowed as it's a terminal/special state
+}
+
 @frappe.whitelist()
 def validate_import_file():
     """Performs a pre-import check: counts rows and validates existence of mapped headers."""
@@ -158,6 +167,24 @@ def execute_import():
             arn_no = str(doc_data.get("arn_no", "")).strip().upper()
             if not arn_no: continue
             doc_data["arn_no"] = arn_no
+
+            # REFINEMENT: Activation Status State-Transition Logic
+            new_status = doc_data.get("card_activation_status")
+            if arn_no in existing_records:
+                # 1. Fetch current status from DB
+                old_status = frappe.db.get_value("Adobe Dump", existing_records[arn_no]["name"], "card_activation_status")
+                
+                # 2. Rule: Never overwrite with Blank/Null/#N/A if old data exists
+                if not new_status or str(new_status).strip().upper() == "#N/A":
+                    doc_data.pop("card_activation_status", None)
+                else:
+                    # 3. Rule: Check Priority (Prevent Downgrades)
+                    new_rank = ACTIVATION_RANK.get(new_status, 0)
+                    old_rank = ACTIVATION_RANK.get(old_status, 0)
+
+                    # Only update if new rank is higher OR if it's "Card closed" (Universal Override)
+                    if new_rank <= old_rank and new_status != "Card closed":
+                        doc_data.pop("card_activation_status", None)
             
             try:
                 if arn_no in existing_records:

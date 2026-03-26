@@ -18,3 +18,9 @@ class IPARecords(Document):
 			from frappe.utils import getdate
 			# Convert to MMM-YY format like Jan-25
 			self.arn_month = getdate(self.arn_date).strftime("%b-%y")
+
+	def on_update(self):
+		# Auto-rename the document if arn_no is changed to keep ID in sync
+		if self.arn_no and self.name != self.arn_no.upper():
+			import frappe
+			frappe.rename_doc(self.doctype, self.name, self.arn_no.upper(), force=True)

@@ -1,0 +1,281 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-26 09:07:11.636130",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "employee_name",
+  "dsa_dump_date",
+  "column_break_xvtm",
+  "customer_name",
+  "final_decision",
+  "column_break_hmgw",
+  "mobile_no",
+  "final_decision_date",
+  "column_break_axht",
+  "seg_id",
+  "activation_status",
+  "section_break_nmne",
+  "decline_code",
+  "column_break_jeqq",
+  "decline_category",
+  "column_break_zcei",
+  "decline_description",
+  "column_break_sbzq",
+  "section_break_jmlr",
+  "arn_no",
+  "product",
+  "column_break_xbbq",
+  "arn_date",
+  "employer",
+  "column_break_djxo",
+  "city",
+  "column_break_bkaz",
+  "promo_code",
+  "section_break_qlbs",
+  "dsa_code",
+  "column_break_uegl",
+  "lc1_code",
+  "column_break_wmry",
+  "lc2_code",
+  "column_break_vrkq",
+  "sm_code",
+  "section_break_bhdu",
+  "decision_month",
+  "column_break_qvlb",
+  "employee_code",
+  "column_break_dzey",
+  "column_break_lskf"
+ ],
+ "fields": [
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "label": "ARN No",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_xbbq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "arn_date",
+   "fieldtype": "Date",
+   "label": "ARN Date"
+  },
+  {
+   "fieldname": "column_break_djxo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "final_decision",
+   "fieldtype": "Data",
+   "label": "Final Decision"
+  },
+  {
+   "fieldname": "column_break_bkaz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "final_decision_date",
+   "fieldtype": "Date",
+   "label": "Final Decision Date"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "section_break_qlbs",
+   "fieldtype": "Section Break",
+   "label": "DSA Mapping"
+  },
+  {
+   "fieldname": "dsa_code",
+   "fieldtype": "Data",
+   "label": "DSA Code"
+  },
+  {
+   "fieldname": "column_break_uegl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lc1_code",
+   "fieldtype": "Data",
+   "label": "LC1 Code"
+  },
+  {
+   "fieldname": "column_break_wmry",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lc2_code",
+   "fieldtype": "Data",
+   "label": "LC2 Code"
+  },
+  {
+   "fieldname": "column_break_vrkq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sm_code",
+   "fieldtype": "Data",
+   "label": "SM Code"
+  },
+  {
+   "fieldname": "seg_id",
+   "fieldtype": "Data",
+   "label": "SEG ID"
+  },
+  {
+   "fieldname": "promo_code",
+   "fieldtype": "Data",
+   "label": "Promo Code"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "employer",
+   "fieldtype": "Data",
+   "label": "Employer"
+  },
+  {
+   "fieldname": "activation_status",
+   "fieldtype": "Data",
+   "label": "Activation Status"
+  },
+  {
+   "fieldname": "section_break_nmne",
+   "fieldtype": "Section Break",
+   "label": "Decline Details"
+  },
+  {
+   "fieldname": "decline_code",
+   "fieldtype": "Data",
+   "label": "Decline Code"
+  },
+  {
+   "fieldname": "column_break_jeqq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decline_category",
+   "fieldtype": "Data",
+   "label": "Decline Category"
+  },
+  {
+   "fieldname": "column_break_zcei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decline_description",
+   "fieldtype": "Data",
+   "label": "Decline Description"
+  },
+  {
+   "fieldname": "column_break_sbzq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_xvtm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_hmgw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "column_break_axht",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jmlr",
+   "fieldtype": "Section Break",
+   "label": "Product & Promo"
+  },
+  {
+   "fieldname": "section_break_bhdu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "decision_month",
+   "fieldtype": "Data",
+   "label": "Decision Month"
+  },
+  {
+   "fieldname": "column_break_qvlb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dzey",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lskf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dsa_dump_date",
+   "fieldtype": "Date",
+   "label": "DSA Dump Date"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-26 12:30:00.039498",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "DSA Dump",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
