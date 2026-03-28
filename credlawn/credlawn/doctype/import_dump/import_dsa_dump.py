@@ -26,11 +26,38 @@ FIELD_MAPPING = {
 # Priority Ranking for Activation Status (Higher = More Active/Final)
 ACTIVATION_RANK = {
     "Inactive": 1,
-    "V+Active": 2,
+    "V+ Active": 2,
     "Txn Active": 3,
     "Txn Active - Rs 100": 4,
     "Card closed": 5 # Always allowed as it's a terminal/special state
 }
+
+def normalize_status(status):
+    """
+    Standardizes Activation Status strings:
+    - Strips whitespace
+    - Replaces underscores with spaces
+    - Consolidates multiple spaces
+    - Fixes common bank variations (V+Active -> V+ Active)
+    """
+    if not status or str(status).strip().upper() == "#N/A":
+        return None
+    
+    # Basic cleaning
+    s = str(status).strip().replace("_", " ")
+    s = " ".join(s.split()) # Remove multi-spaces
+    
+    # Case-insensitive common fixes
+    sl = s.lower()
+    if sl == "v+active": return "V+ Active"
+    if sl == "txnactive": return "Txn Active"
+    if sl == "inactive": return "Inactive"
+    if sl == "card closed": return "Card closed"
+    if "txn active" in sl and "100" in sl: return "Txn Active - Rs 100"
+    
+    # Default: Return capitalized words for beauty, 
+    # but specific ones above are prioritized
+    return s.capitalize() if len(s) > 2 else s
 
 def parse_date_from_arn(arn):
     """
@@ -155,6 +182,11 @@ def execute_import():
                     val = row[i] if i < len(row) else None
                     if val is not None and str(val).strip().upper() == "#N/A": val = None
                     
+                    if val and fname == "activation_status":
+                        val = normalize_status(val)
+                    elif val and isinstance(val, str):
+                        val = val.strip()
+
                     if val and fname == "final_decision_date":
                         try:
                             if isinstance(val, str) and "/" in val:
@@ -195,11 +227,11 @@ def execute_import():
                     doc_data.pop("activation_status", None)
                 else:
                     # 3. Rule: Check Priority (Prevent Downgrades)
-                    new_status_cleaned = str(new_status).strip()
-                    old_status_cleaned = str(old_status).strip() if old_status else ""
+                    new_status_cleaned = normalize_status(new_status)
+                    old_status_cleaned = normalize_status(old_status)
                     
-                    # Manual Override for "Card closed" (Case-insensitive)
-                    if new_status_cleaned.lower() == "card closed":
+                    # Manual Override for "Card closed"
+                    if new_status_cleaned == "Card closed":
                         pass # Allow update
                     else:
                         new_rank = ACTIVATION_RANK.get(new_status_cleaned, 0)
@@ -208,6 +240,8 @@ def execute_import():
                         # Only update if new rank is strictly higher
                         if new_rank <= old_rank:
                             doc_data.pop("activation_status", None)
+                        else:
+                            doc_data["activation_status"] = new_status_cleaned
 
             arn_date = parse_date_from_arn(arn_no)
             if arn_date:

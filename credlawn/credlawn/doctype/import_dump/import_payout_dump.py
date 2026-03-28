@@ -111,6 +111,9 @@ def execute_import():
                     val = row[i] if i < len(row) else None
                     if val is not None and str(val).strip().upper() == "#N/A": val = None
                     
+                    if val and isinstance(val, str):
+                        val = val.strip()
+                    
                     if val and fname == "decision_date":
                         try: val = getdate(val)
                         except: pass
