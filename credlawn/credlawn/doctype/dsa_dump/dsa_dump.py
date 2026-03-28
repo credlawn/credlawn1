@@ -78,6 +78,7 @@ def process_bpa_payout_sync(doc, ipa_info):
 				"seg_id": doc.seg_id,
 				"product_in_dsa_dump": doc.product,
 				"activation_status": doc.activation_status,
+				"card_activation_status": doc.activation_status,
 				"dsa_dump_date": doc.dsa_dump_date,
 			}
 

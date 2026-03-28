@@ -195,12 +195,19 @@ def execute_import():
                     doc_data.pop("activation_status", None)
                 else:
                     # 3. Rule: Check Priority (Prevent Downgrades)
-                    new_rank = ACTIVATION_RANK.get(new_status, 0)
-                    old_rank = ACTIVATION_RANK.get(old_status, 0)
-
-                    # Only update if new rank is higher OR if it's "Card closed" (Universal Override)
-                    if new_rank <= old_rank and new_status != "Card closed":
-                        doc_data.pop("activation_status", None)
+                    new_status_cleaned = str(new_status).strip()
+                    old_status_cleaned = str(old_status).strip() if old_status else ""
+                    
+                    # Manual Override for "Card closed" (Case-insensitive)
+                    if new_status_cleaned.lower() == "card closed":
+                        pass # Allow update
+                    else:
+                        new_rank = ACTIVATION_RANK.get(new_status_cleaned, 0)
+                        old_rank = ACTIVATION_RANK.get(old_status_cleaned, 0)
+                        
+                        # Only update if new rank is strictly higher
+                        if new_rank <= old_rank:
+                            doc_data.pop("activation_status", None)
 
             arn_date = parse_date_from_arn(arn_no)
             if arn_date:

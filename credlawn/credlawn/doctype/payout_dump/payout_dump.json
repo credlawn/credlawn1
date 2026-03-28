@@ -38,6 +38,7 @@
   "card_classification",
   "section_break_enak",
   "card_level_payout_100",
+  "final_amount_in_dump",
   "column_break_lpzc",
   "card_level_payout_80",
   "column_break_zqnh",
@@ -50,7 +51,8 @@
   "multiplier",
   "column_break_wpeq",
   "payout_slab",
-  "column_break_sebg"
+  "column_break_sebg",
+  "deduction_type"
  ],
  "fields": [
   {
@@ -272,12 +274,23 @@
    "fieldname": "card_mapping_section",
    "fieldtype": "Section Break",
    "label": "Card Mapping"
+  },
+  {
+   "fieldname": "final_amount_in_dump",
+   "fieldtype": "Currency",
+   "label": "Final Amount in Dump",
+   "precision": "0"
+  },
+  {
+   "fieldname": "deduction_type",
+   "fieldtype": "Data",
+   "label": "Deduction Type"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-26 18:07:59.283645",
+ "modified": "2026-03-26 18:43:45.587187",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Payout Dump",
