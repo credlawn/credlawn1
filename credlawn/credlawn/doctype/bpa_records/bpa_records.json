@@ -255,10 +255,9 @@
   }
  ],
  "grid_page_length": 50,
- "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-26 12:30:15.517177",
+ "modified": "2026-03-28 14:47:04.050910",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "BPA Records",
@@ -281,5 +280,6 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
