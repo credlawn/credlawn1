@@ -5,11 +5,11 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "basic_details_section",
   "employee_name",
   "column_break_bjbv",
-  "employee_code",
-  "column_break_sfol",
   "mobile_no",
+  "column_break_sfol",
   "column_break_xwjz",
   "section_break_oijw",
   "call_date",
@@ -23,14 +23,15 @@
   "column_break_olvp",
   "call_status",
   "section_break_umpm",
-  "pb_id",
+  "pb_created",
   "clean_from_pb",
   "column_break_ugcw",
-  "pb_created",
+  "pb_updated",
   "deleted_from_pb",
   "column_break_ampc",
-  "pb_updated",
-  "column_break_izvd"
+  "employee_code",
+  "column_break_izvd",
+  "pb_id"
  ],
  "fields": [
   {
@@ -72,7 +73,8 @@
   },
   {
    "fieldname": "section_break_oijw",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Call Details"
   },
   {
    "fieldname": "call_duration",
@@ -129,13 +131,16 @@
    "label": "Call Status"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_umpm",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Helper"
   },
   {
    "fieldname": "pb_id",
    "fieldtype": "Data",
-   "label": "PB ID"
+   "label": "PB ID",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_ugcw",
@@ -144,7 +149,8 @@
   {
    "fieldname": "pb_created",
    "fieldtype": "Data",
-   "label": "PB Created"
+   "label": "PB Created",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_ampc",
@@ -153,7 +159,8 @@
   {
    "fieldname": "pb_updated",
    "fieldtype": "Data",
-   "label": "PB Updated"
+   "label": "PB Updated",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_izvd",
@@ -171,13 +178,18 @@
    "fieldtype": "Check",
    "label": "Deleted From PB",
    "read_only": 1
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 11:46:25.783972",
+ "modified": "2026-04-01 11:50:01.759924",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Call Log",
