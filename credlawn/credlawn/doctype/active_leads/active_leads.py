@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class Leads(Document):
+class ActiveLeads(Document):
 	pass

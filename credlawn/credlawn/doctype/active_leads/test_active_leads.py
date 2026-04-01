@@ -13,9 +13,9 @@ IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
 
 
-class IntegrationTestLeads(IntegrationTestCase):
+class IntegrationTestActiveLeads(IntegrationTestCase):
 	"""
-	Integration tests for Leads.
+	Integration tests for ActiveLeads.
 	Use this class for testing interactions between multiple components.
 	"""
 
