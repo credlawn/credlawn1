@@ -31,8 +31,8 @@ FIELD_MAPPING = {
     "vkyc_status": "VKYC_STATUS",
     "final_decision": "FINAL_DECISION",
     "final_decision_date": "FINAL_DECISION_DATE",
-    "dap_final_date": "DAP_FINAL_DATE",
-    "kyc_completion_date": "KYC_COMPLETION_DATE",
+    "dap_final_date": "Final DAP Submission Date",
+    "kyc_completion_date": "KYC Completion date",
     "bkyc_status": "BKYC Status",
     "bkyc_reason": "Reason",
     "kyc_type": "VKYC_CONSENT_DATE",
@@ -57,29 +57,37 @@ ACTIVATION_RANK = {
 
 def normalize_status(status):
     """
-    Standardizes Activation Status strings:
-    - Strips whitespace
-    - Replaces underscores with spaces
-    - Consolidates multiple spaces
-    - Fixes common bank variations (V+Active -> V+ Active)
+    Robust standardization for Activation Status:
+    - Strips, removes underscores, reduces spaces
+    - Maps all known variants (V+Active, V+ Active, etc.) to one canonical string
     """
     if not status or str(status).strip().upper() == "#N/A":
         return None
     
-    # Basic cleaning
-    s = str(status).strip().replace("_", " ")
-    s = " ".join(s.split()) # Remove multi-spaces
+    # 1. Standardize formatting (Uppercase, No underscores, Single spaces)
+    s = str(status).strip().upper().replace("_", " ")
+    s = " ".join(s.split())
     
-    # Case-insensitive common fixes
-    sl = s.lower()
-    if sl == "v+active": return "V+ Active"
-    if sl == "txnactive": return "Txn Active"
-    if sl == "inactive": return "Inactive"
-    if sl == "card closed": return "Card closed"
-    if "txn active" in sl and "100" in sl: return "Txn Active - Rs 100"
+    # 2. Canonical Map
+    lookup = {
+        "V+ACTIVE": "V+ Active",
+        "V+ ACTIVE": "V+ Active",
+        "TXN ACTIVE": "Txn Active",
+        "TXNACTIVE": "Txn Active",
+        "INACTIVE": "Inactive",
+        "CARD CLOSED": "Card closed",
+        "CARDCLOSED": "Card closed"
+    }
     
-    # Default: Return capitalized words for beauty
-    return s.capitalize() if len(s) > 2 else s
+    if s in lookup:
+        return lookup[s]
+    
+    # 3. Special substring matches
+    if "TXN ACTIVE" in s and "100" in s:
+        return "Txn Active - Rs 100"
+    
+    # 4. Fallback to title case for unknown but clean strings
+    return s.title()
 
 @frappe.whitelist()
 def validate_import_file():
@@ -219,7 +227,8 @@ def execute_import():
                     else:
                         new_rank = ACTIVATION_RANK.get(new_status_cleaned, 0)
                         old_rank = ACTIVATION_RANK.get(old_status_cleaned, 0)
-                        if new_rank <= old_rank:
+                        # Update if NEW rank is HIGHER OR EQUAL (to ensure canonical string is saved)
+                        if new_rank < old_rank:
                             doc_data.pop("card_activation_status", None)
                         else:
                             doc_data["card_activation_status"] = new_status_cleaned

@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "creation": "2026-04-01 07:35:39.313683",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_name",
+  "check_in_time",
+  "column_break_dxto",
+  "attendance_date",
+  "check_out_time",
+  "column_break_ufze",
+  "approved_status",
+  "section_break_fdvo",
+  "check_in_latitude",
+  "column_break_seee",
+  "check_in_longitude",
+  "column_break_fjzd",
+  "check_out_latitude",
+  "column_break_roev",
+  "check_out_longitude",
+  "section_break_selfies",
+  "address",
+  "column_break_selfie",
+  "check_in_selfie",
+  "column_break_jitg",
+  "check_out_selfie",
+  "section_break_info",
+  "pb_created",
+  "clean_from_pb",
+  "column_break_qpqm",
+  "pb_updated",
+  "column_break_txhd",
+  "pb_id",
+  "column_break_hkfo",
+  "employee_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "attendance_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Attendance Date"
+  },
+  {
+   "fieldname": "column_break_dxto",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_in_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Check-in Time"
+  },
+  {
+   "fieldname": "check_out_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Check-out Time"
+  },
+  {
+   "fieldname": "column_break_ufze",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "approved_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Approved Status",
+   "options": "Pending\nPresent\nAbsent\nHalf-day\nLeave"
+  },
+  {
+   "fieldname": "pb_id",
+   "fieldtype": "Data",
+   "label": "PB ID",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_fdvo",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "check_in_latitude",
+   "fieldtype": "Data",
+   "label": "Check-in Latitude",
+   "read_only": 1
+  },
+  {
+   "fieldname": "check_in_longitude",
+   "fieldtype": "Data",
+   "label": "Check-in Longitude",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_seee",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_out_latitude",
+   "fieldtype": "Data",
+   "label": "Check-out Latitude",
+   "read_only": 1
+  },
+  {
+   "fieldname": "check_out_longitude",
+   "fieldtype": "Data",
+   "label": "Check-out Longitude",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_selfies",
+   "fieldtype": "Section Break",
+   "label": "Selfies"
+  },
+  {
+   "fieldname": "check_in_selfie",
+   "fieldtype": "Attach Image",
+   "label": "Check-in Selfie",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_selfie",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_out_selfie",
+   "fieldtype": "Attach Image",
+   "label": "Check-out Selfie",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_info",
+   "fieldtype": "Section Break",
+   "label": "Additional Info"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pb_created",
+   "fieldtype": "Data",
+   "label": "PB Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pb_updated",
+   "fieldtype": "Data",
+   "label": "PB Updated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fjzd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_roev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qpqm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_jitg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_txhd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hkfo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "clean_from_pb",
+   "fieldtype": "Check",
+   "label": "Clean From PB"
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-01 08:54:40.512397",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Attendance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name"
+}
