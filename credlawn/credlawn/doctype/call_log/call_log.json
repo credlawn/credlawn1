@@ -1,0 +1,205 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-01 10:54:01.617298",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_name",
+  "column_break_bjbv",
+  "employee_code",
+  "column_break_sfol",
+  "mobile_no",
+  "column_break_xwjz",
+  "section_break_oijw",
+  "call_date",
+  "call_duration",
+  "column_break_ptcd",
+  "call_time",
+  "ring_duration",
+  "column_break_dtky",
+  "call_type",
+  "session_duration",
+  "column_break_olvp",
+  "call_status",
+  "section_break_umpm",
+  "pb_id",
+  "clean_from_pb",
+  "column_break_ugcw",
+  "pb_created",
+  "deleted_from_pb",
+  "column_break_ampc",
+  "pb_updated",
+  "column_break_izvd"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_bjbv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_sfol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xwjz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Mobile No",
+   "search_index": 1
+  },
+  {
+   "fieldname": "call_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Call Date"
+  },
+  {
+   "fieldname": "section_break_oijw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "call_duration",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Call Duration"
+  },
+  {
+   "fieldname": "column_break_ptcd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "call_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Call Time"
+  },
+  {
+   "fieldname": "ring_duration",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Ring Duration"
+  },
+  {
+   "fieldname": "column_break_dtky",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "call_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Call Type"
+  },
+  {
+   "fieldname": "session_duration",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Session Duration"
+  },
+  {
+   "fieldname": "column_break_olvp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "call_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Call Status"
+  },
+  {
+   "fieldname": "section_break_umpm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "pb_id",
+   "fieldtype": "Data",
+   "label": "PB ID"
+  },
+  {
+   "fieldname": "column_break_ugcw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_created",
+   "fieldtype": "Data",
+   "label": "PB Created"
+  },
+  {
+   "fieldname": "column_break_ampc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_updated",
+   "fieldtype": "Data",
+   "label": "PB Updated"
+  },
+  {
+   "fieldname": "column_break_izvd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "clean_from_pb",
+   "fieldtype": "Check",
+   "label": "Clean From PB"
+  },
+  {
+   "default": "0",
+   "fieldname": "deleted_from_pb",
+   "fieldtype": "Check",
+   "label": "Deleted From PB",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-01 11:46:25.783972",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Call Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name"
+}
