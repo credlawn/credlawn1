@@ -78,12 +78,10 @@ def archive_job():
                 frappe.log_error(f"Archive Batch Request Failed: {str(e)}", "Call Log Archive")
 
             processed_count += len(batch)
-            progress = int((processed_count / total_records) * 100)
-            publish_progress(progress, f"Archived {processed_count} of {total_records}...")
             frappe.db.commit()
 
-        summary = f"Call Log Archive Complete! Success: {success_count}"
-        publish_progress(100, summary)
+        summary = f"Successfully deleted {success_count} Call Logs from Pocketbase"
+        frappe.log_error(summary, "Call Log Archive Completed")
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Call Log Archive Job Fatal Error")

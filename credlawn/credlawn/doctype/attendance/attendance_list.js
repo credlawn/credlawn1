@@ -23,7 +23,10 @@ frappe.listview_settings['Attendance'] = {
             } else {
                 frappe.show_progress(__('Archiving Attendance'), data.percentage, 100, data.message);
                 if (data.percentage >= 100) {
-                    setTimeout(() => { frappe.hide_progress(); listview.refresh(); }, 3000);
+                    setTimeout(() => {
+                        frappe.hide_progress();
+                        listview.refresh();
+                    }, 3000);
                 }
             }
         });

@@ -16,17 +16,6 @@ frappe.listview_settings['Call Log'] = {
             }
         });
 
-        frappe.realtime.on('call_log_archive_progress', (data) => {
-            if (data.failed) {
-                frappe.show_progress(__('Archive Failed'), 100, 100, data.message);
-                setTimeout(() => frappe.hide_progress(), 5000);
-            } else {
-                frappe.show_progress(__('Archiving Call Logs'), data.percentage, 100, data.message);
-                if (data.percentage >= 100) {
-                    setTimeout(() => { frappe.hide_progress(); listview.refresh(); }, 3000);
-                }
-            }
-        });
 
         // Sync Call Logs Button (Main Area)
         listview.page.add_inner_button(__('Sync Call Logs'), function () {
