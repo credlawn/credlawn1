@@ -30,6 +30,7 @@
   "clean_from_pb",
   "column_break_qpqm",
   "pb_updated",
+  "deleted_from_pb",
   "column_break_txhd",
   "pb_id",
   "column_break_hkfo",
@@ -198,13 +199,20 @@
    "fieldname": "clean_from_pb",
    "fieldtype": "Check",
    "label": "Clean From PB"
+  },
+  {
+   "default": "0",
+   "fieldname": "deleted_from_pb",
+   "fieldtype": "Check",
+   "label": "Deleted From PB",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 08:54:40.512397",
+ "modified": "2026-04-01 09:52:32.219899",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Attendance",

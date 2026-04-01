@@ -86,7 +86,8 @@ def archive_job():
                     frappe.db.sql("""
                         UPDATE `tabAttendance` 
                         SET 
-                            clean_from_pb = 0, 
+                            clean_from_pb = 0,
+                            deleted_from_pb = 1,
                             pb_id = '', 
                             check_in_selfie = '', 
                             check_out_selfie = '' 

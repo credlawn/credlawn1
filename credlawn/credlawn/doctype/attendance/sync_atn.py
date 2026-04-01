@@ -72,12 +72,14 @@ def sync_job():
                         # Timestamps differ, update record
                         doc_name = frappe.db.get_value("Attendance", {"pb_id": pb_id}, "name")
                         doc = frappe.get_doc('Attendance', doc_name)
+                        doc.flags.from_pb_sync = True
                         update_doc_fields(doc, record)
                         doc.save(ignore_permissions=True)
                         updated_count += 1
                     else:
                         # New record
                         doc = frappe.new_doc('Attendance')
+                        doc.flags.from_pb_sync = True
                         update_doc_fields(doc, record)
                         doc.insert(ignore_permissions=True)
                         created_count += 1
@@ -167,6 +169,36 @@ def update_doc_fields(doc, pb_record):
     doc.pb_updated = pb_record.get('updated')
         
     return True
+
+def push_status_to_pb(doc_name):
+    """Pushes the updated approved_status back to Pocketbase."""
+    try:
+        doc = frappe.get_doc('Attendance', doc_name)
+        if not doc.pb_id:
+            return
+
+        pb_url = frappe.conf.get("pocketbase_url")
+        pb_token = frappe.conf.get("pocketbase_auth_token")
+
+        if not pb_url or not pb_token:
+            return
+
+        api_url = f"{pb_url.rstrip('/')}/api/collections/attendance/records/{doc.pb_id}"
+        headers = {
+            "Authorization": f"Bearer {pb_token}",
+            "Content-Type": "application/json"
+        }
+        
+        # Pocketbase uses 'status' field for approval tracking
+        data = {"status": doc.approved_status}
+        
+        response = requests.patch(api_url, headers=headers, json=data, timeout=30)
+        
+        if response.status_code != 200:
+            frappe.log_error(f"Failed to push status to PB: {response.text}", "Attendance Status Sync Error")
+            
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Attendance Status Sync Job Error")
 
 def publish_progress(percentage, message, failed=False):
     frappe.publish_realtime("attendance_sync_progress", {"percentage": percentage, "message": message, "failed": failed})
