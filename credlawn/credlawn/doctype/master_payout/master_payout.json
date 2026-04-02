@@ -13,14 +13,15 @@
   "column_break_tcta",
   "po_amount",
   "column_break_nwed",
-  "decision_date",
+  "po_type",
   "month_section",
   "sourcing_month",
   "column_break_psmt",
   "prime_month",
   "column_break_rmrk",
   "po_month",
-  "column_break_mlvh"
+  "column_break_mlvh",
+  "decision_date"
  ],
  "fields": [
   {
@@ -106,13 +107,19 @@
    "fieldname": "decision_date",
    "fieldtype": "Date",
    "label": "Decision Date"
+  },
+  {
+   "fieldname": "po_type",
+   "fieldtype": "Select",
+   "label": "PO Type",
+   "options": "\nIncome\nDeduction"
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 19:27:47.854118",
+ "modified": "2026-04-02 19:47:53.731757",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Master Payout",

@@ -9,6 +9,7 @@ class MasterPayout(Document):
 	def validate(self):
 		self.set_sourcing_month()
 		self.set_prime_month()
+		self.set_po_type()
 
 	def set_sourcing_month(self):
 		if not self.arn_no:
@@ -40,4 +41,10 @@ class MasterPayout(Document):
 			date = getdate(self.decision_date)
 			self.prime_month = date.strftime("%b-%y")
 		except Exception:
-			pass
+				pass
+
+	def set_po_type(self):
+		if self.po_amount > 0:
+			self.po_type = "Income"
+		elif self.po_amount < 0:
+			self.po_type = "Deduction"
