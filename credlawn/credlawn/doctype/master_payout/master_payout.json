@@ -5,18 +5,27 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "card_details_section",
   "arn_no",
   "column_break_sjmi",
   "dsa_code",
   "column_break_tcta",
   "po_amount",
   "column_break_nwed",
-  "po_month"
+  "month_section",
+  "sourcing_month",
+  "column_break_psmt",
+  "prime_month",
+  "column_break_rmrk",
+  "po_month",
+  "column_break_mlvh"
  ],
  "fields": [
   {
    "fieldname": "arn_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ARN No"
   },
   {
@@ -26,6 +35,8 @@
   {
    "fieldname": "dsa_code",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "DSA Code"
   },
   {
@@ -35,6 +46,7 @@
   {
    "fieldname": "po_amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "PO Amount",
    "precision": "0"
   },
@@ -45,14 +57,54 @@
   {
    "fieldname": "po_month",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "PO Month",
    "options": "\nDec-25\nJan-26\nFeb-26\nMar-26\nApr-26\nMay-26\nJun-26\nJul-26\nAug-26\nSep-26\nOct-26\nNov-26\nDec-26"
+  },
+  {
+   "fieldname": "prime_month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Prime Month",
+   "options": "\nDec-25\nJan-26\nFeb-26\nMar-26\nApr-26\nMay-26\nJun-26\nJul-26\nAug-26\nSep-26\nOct-26\nNov-26\nDec-26"
+  },
+  {
+   "fieldname": "sourcing_month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sourcing Month",
+   "options": "\nSep-25\nOct-25\nNov-25\nDec-25\nJan-26\nFeb-26\nMar-26\nApr-26\nMay-26\nJun-26\nJul-26\nAug-26\nSep-26\nOct-26\nNov-26\nDec-26"
+  },
+  {
+   "fieldname": "card_details_section",
+   "fieldtype": "Section Break",
+   "label": "Card Details"
+  },
+  {
+   "fieldname": "month_section",
+   "fieldtype": "Section Break",
+   "label": "Month"
+  },
+  {
+   "fieldname": "column_break_psmt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rmrk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_mlvh",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 18:56:57.773648",
+ "modified": "2026-04-02 19:09:31.943402",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Master Payout",
@@ -75,5 +127,6 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "arn_no"
 }

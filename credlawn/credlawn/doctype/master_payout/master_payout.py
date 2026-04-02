@@ -6,4 +6,27 @@ from frappe.model.document import Document
 
 
 class MasterPayout(Document):
-	pass
+	def validate(self):
+		self.set_sourcing_month()
+
+	def set_sourcing_month(self):
+		if not self.arn_no:
+			return
+
+		# Format: D25K22... where 25 is year, K is month (A=Jan, K=Nov)
+		if len(self.arn_no) >= 4:
+			try:
+				year_code = self.arn_no[1:3]  # e.g., "25"
+				month_code = self.arn_no[3].upper() # e.g., "K"
+
+				month_map = {
+					'A': 'Jan', 'B': 'Feb', 'C': 'Mar', 'D': 'Apr',
+					'E': 'May', 'F': 'Jun', 'G': 'Jul', 'H': 'Aug',
+					'I': 'Sep', 'J': 'Oct', 'K': 'Nov', 'L': 'Dec'
+				}
+
+				if month_code in month_map:
+					month_name = month_map[month_code]
+					self.sourcing_month = f"{month_name}-{year_code}"
+			except Exception:
+				pass
