@@ -1,13 +1,14 @@
 # Copyright (c) 2026, Credlawn India and contributors
 # For license information, please see license.txt
 
-# import frappe
 from frappe.model.document import Document
+from frappe.utils import getdate
 
 
 class MasterPayout(Document):
 	def validate(self):
 		self.set_sourcing_month()
+		self.set_prime_month()
 
 	def set_sourcing_month(self):
 		if not self.arn_no:
@@ -30,3 +31,13 @@ class MasterPayout(Document):
 					self.sourcing_month = f"{month_name}-{year_code}"
 			except Exception:
 				pass
+
+	def set_prime_month(self):
+		if not self.decision_date:
+			return
+
+		try:
+			date = getdate(self.decision_date)
+			self.prime_month = date.strftime("%b-%y")
+		except Exception:
+			pass

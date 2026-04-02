@@ -12,6 +12,7 @@
   "column_break_tcta",
   "po_amount",
   "column_break_nwed",
+  "decision_date",
   "month_section",
   "sourcing_month",
   "column_break_psmt",
@@ -99,12 +100,17 @@
   {
    "fieldname": "column_break_mlvh",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decision_date",
+   "fieldtype": "Date",
+   "label": "Decision Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 19:09:31.943402",
+ "modified": "2026-04-02 19:18:23.400016",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Master Payout",
