@@ -61,8 +61,8 @@ def normalize_status(status):
     - Strips, removes underscores, reduces spaces
     - Maps all known variants (V+Active, V+ Active, etc.) to one canonical string
     """
-    if not status or str(status).strip().upper() == "#N/A":
-        return None
+    if not status or str(status).strip().upper() in ["", "#N/A", "NA", "N/A", "NULL", "NONE", "NAN"]:
+        return "Inactive"
     
     # 1. Standardize formatting (Uppercase, No underscores, Single spaces)
     s = str(status).strip().upper().replace("_", " ")
@@ -82,11 +82,12 @@ def normalize_status(status):
     if s in lookup:
         return lookup[s]
     
-    # 3. Special substring matches
+    # 3. Special substring matches (e.g. Txn Active - Rs 100)
     if "TXN ACTIVE" in s and "100" in s:
         return "Txn Active - Rs 100"
     
-    # 4. Fallback to title case for unknown but clean strings
+    # 4. Fallback to title case (Clean but unknown)
+    # Ensure it's still one of the keywords if possible
     return s.title()
 
 @frappe.whitelist()
@@ -179,7 +180,10 @@ def execute_import():
                 if label in excel_to_field:
                     fname = excel_to_field[label]
                     val = row[i] if i < len(row) else None
-                    if val is not None and str(val).strip().upper() == "#N/A": val = None
+                    if val is not None and str(val).strip().upper() == "#N/A":
+                        # Only allow #N/A for activation status to become Inactive, others remain None
+                        if fname != "card_activation_status":
+                            val = None
                     
                     # Core Date Parsing (Handles MM/DD/YYYY and Excel Serials)
                     if val:
@@ -195,7 +199,7 @@ def execute_import():
                                 try: val = getdate(val)
                                 except: pass
                     
-                    if val and fname == "card_activation_status":
+                    if fname == "card_activation_status":
                         val = normalize_status(val)
                     elif val and isinstance(val, str):
                         val = val.strip()
@@ -208,30 +212,29 @@ def execute_import():
             doc_data["arn_no"] = arn_no
 
             # REFINEMENT: Activation Status State-Transition Logic
-            new_status = doc_data.get("card_activation_status")
+            new_status = doc_data.get("card_activation_status") # Already normalized at Line 199
             if arn_no in existing_records:
-                # 1. Fetch current status from DB
-                old_status = frappe.db.get_value("Adobe Dump", existing_records[arn_no]["name"], "card_activation_status")
+                # 1. Fetch current status from DB (Normalize for comparison)
+                old_status = normalize_status(frappe.db.get_value("Adobe Dump", existing_records[arn_no]["name"], "card_activation_status"))
                 
-                # 2. Rule: Never overwrite with Blank/Null/#N/A if old data exists
-                if not new_status or str(new_status).strip().upper() == "#N/A":
+                # 2. Rule: Never overwrite with Blank/Null if old data exists
+                if not new_status:
                     doc_data.pop("card_activation_status", None)
                 else:
                     # 3. Rule: Check Priority (Prevent Downgrades)
-                    new_status_cleaned = normalize_status(new_status)
-                    old_status_cleaned = normalize_status(old_status)
-
-                    # Only update if new rank is higher OR if it's "Card closed" (Universal Override)
-                    if new_status_cleaned == "Card closed":
+                    # Use existing Rankin logic with already CLEANED strings
+                    if new_status == "Card closed":
                         pass
                     else:
-                        new_rank = ACTIVATION_RANK.get(new_status_cleaned, 0)
-                        old_rank = ACTIVATION_RANK.get(old_status_cleaned, 0)
-                        # Update if NEW rank is HIGHER OR EQUAL (to ensure canonical string is saved)
+                        new_rank = ACTIVATION_RANK.get(new_status, 0)
+                        old_rank = ACTIVATION_RANK.get(old_status, 0)
+                        
+                        # Only update if NEW rank is HIGHER OR EQUAL
                         if new_rank < old_rank:
                             doc_data.pop("card_activation_status", None)
                         else:
-                            doc_data["card_activation_status"] = new_status_cleaned
+                            # doc_data already contains the correct canonical string (new_status)
+                            pass
             
             try:
                 if arn_no in existing_records:

@@ -13,6 +13,37 @@ frappe.listview_settings['BPA Records'] = {
             });
         });
 
+        listview.page.add_inner_button(__('Calculate Payout'), function () {
+            frappe.call({
+                method: 'credlawn.credlawn.doctype.bpa_records.calculate_payout.get_decision_months',
+                callback: function(r) {
+                    let months = r.message || [];
+                    frappe.prompt([
+                        {
+                            label: __('Select Decision Month'),
+                            fieldname: 'decision_month',
+                            fieldtype: 'Select',
+                            options: months,
+                            reqd: 1
+                        }
+                    ], (values) => {
+                        frappe.call({
+                            method: 'credlawn.credlawn.doctype.bpa_records.calculate_payout.execute_calculation',
+                            args: {
+                                decision_month: values.decision_month
+                            },
+                            callback: function (resp) {
+                                if (resp.message) {
+                                    frappe.msgprint(resp.message);
+                                    listview.refresh();
+                                }
+                            }
+                        });
+                    }, __('Calculate Payout'), __('Calculate'));
+                }
+            });
+        });
+
         listview.page.add_inner_button(__('Truncate'), function () {
             frappe.prompt([
                 {

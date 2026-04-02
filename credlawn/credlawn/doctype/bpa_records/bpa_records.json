@@ -25,6 +25,7 @@
   "customer_details_section",
   "customer_name",
   "promo_code",
+  "biokyc",
   "column_break_qthe",
   "mobile_no",
   "product",
@@ -45,8 +46,12 @@
   "section_break_itjv",
   "decision_month",
   "column_break_xqrk",
+  "base_po",
   "column_break_gsuz",
-  "column_break_zkgk"
+  "kyc_deduction",
+  "column_break_zkgk",
+  "payout_slab",
+  "actual_po"
  ],
  "fields": [
   {
@@ -252,12 +257,42 @@
    "fieldname": "dsa_dump_date",
    "fieldtype": "Date",
    "label": "DSA Dump Date"
+  },
+  {
+   "fieldname": "base_po",
+   "fieldtype": "Currency",
+   "label": "Base PO",
+   "precision": "0"
+  },
+  {
+   "fieldname": "kyc_deduction",
+   "fieldtype": "Currency",
+   "label": "KYC Deduction",
+   "precision": "0"
+  },
+  {
+   "fieldname": "actual_po",
+   "fieldtype": "Currency",
+   "label": "Actual PO",
+   "precision": "0"
+  },
+  {
+   "fieldname": "biokyc",
+   "fieldtype": "Select",
+   "label": "BioKYC",
+   "options": "\nYes"
+  },
+  {
+   "fieldname": "payout_slab",
+   "fieldtype": "Float",
+   "label": "Payout Slab",
+   "precision": "1"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-28 14:47:04.050910",
+ "modified": "2026-04-01 18:57:14.412890",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "BPA Records",

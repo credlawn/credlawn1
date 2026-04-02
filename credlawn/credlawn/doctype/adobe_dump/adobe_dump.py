@@ -88,6 +88,9 @@ def process_bpa_sync(doc, ipa_info, decision_date, decision_month):
 			"mobile_no": ipa_info.get("mobile_no") if ipa_info else ""
 		}
 
+		if doc.kyc_type and str(doc.kyc_type).strip().lower() == "biokyc":
+			bpa_data["biokyc"] = "Yes"
+
 		# BPARecords uses arn_no as its name (ID)
 		if frappe.db.exists("BPA Records", doc.arn_no):
 			bpa_doc = frappe.get_doc("BPA Records", doc.arn_no)

@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:product_code",
+ "creation": "2026-04-01 18:28:46.886033",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "product",
+  "product_code",
+  "column_break_vcdh",
+  "gross_amount",
+  "column_break_qyhz",
+  "pre_gst_amount",
+  "column_break_zxkd",
+  "gst_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_vcdh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gross_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Amount",
+   "precision": "0"
+  },
+  {
+   "fieldname": "column_break_qyhz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pre_gst_amount",
+   "fieldtype": "Currency",
+   "label": "Pre GST Amount",
+   "precision": "0"
+  },
+  {
+   "fieldname": "column_break_zxkd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "precision": "0"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "product_code",
+   "fieldtype": "Data",
+   "label": "Product Code",
+   "unique": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-01 18:42:00.364615",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Card Level Payout",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "product"
+}

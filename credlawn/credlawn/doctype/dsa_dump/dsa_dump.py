@@ -69,7 +69,7 @@ def process_bpa_payout_sync(doc, ipa_info):
 	"""Manages selective upsert logic for BPA Records."""
 	try:
 		# Rule: Selective update for existing, Full create for new
-		existing_bpa = frappe.db.get_value("BPA Records", doc.arn_no, ["name", "employee_name"], as_dict=True)
+		existing_bpa = frappe.db.get_value("BPA Records", doc.arn_no, ["name", "employee_name", "card_activation_status"], as_dict=True)
 
 		if existing_bpa:
 			# Case 1: UPDATE logic (Selective DSA Tracking Only)
@@ -78,9 +78,24 @@ def process_bpa_payout_sync(doc, ipa_info):
 				"seg_id": doc.seg_id,
 				"product_in_dsa_dump": doc.product,
 				"activation_status": doc.activation_status,
-				"card_activation_status": doc.activation_status,
 				"dsa_dump_date": doc.dsa_dump_date,
 			}
+
+			# Priority Guard Logic for card_activation_status
+			new_status = doc.activation_status
+			old_status = existing_bpa.get("card_activation_status")
+			rankings = {"Inactive": 1, "V+ Active": 2, "Txn Active": 3, "Txn Active - Rs 100": 4, "Card closed": 5}
+			
+			if new_status:
+				if new_status == "Card closed":
+					bpa_updates["card_activation_status"] = new_status
+				else:
+					new_rank = rankings.get(new_status, 0)
+					old_rank = rankings.get(old_status, 0) if old_status else 0
+					# Update if NEW rank is HIGHER OR EQUAL
+					if new_rank >= old_rank:
+						bpa_updates["card_activation_status"] = new_status
+
 
 			# Employee Rule: Only update if current BPA is 'Unmapped'
 			if existing_bpa.get("employee_name") == "Unmapped":

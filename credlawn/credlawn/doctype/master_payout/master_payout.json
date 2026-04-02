@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-02 18:54:23.674926",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "arn_no",
+  "column_break_sjmi",
+  "dsa_code",
+  "column_break_tcta",
+  "po_amount",
+  "column_break_nwed",
+  "po_month"
+ ],
+ "fields": [
+  {
+   "fieldname": "arn_no",
+   "fieldtype": "Data",
+   "label": "ARN No"
+  },
+  {
+   "fieldname": "column_break_sjmi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dsa_code",
+   "fieldtype": "Data",
+   "label": "DSA Code"
+  },
+  {
+   "fieldname": "column_break_tcta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_amount",
+   "fieldtype": "Currency",
+   "label": "PO Amount",
+   "precision": "0"
+  },
+  {
+   "fieldname": "column_break_nwed",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "po_month",
+   "fieldtype": "Select",
+   "label": "PO Month",
+   "options": "\nDec-25\nJan-26\nFeb-26\nMar-26\nApr-26\nMay-26\nJun-26\nJul-26\nAug-26\nSep-26\nOct-26\nNov-26\nDec-26"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-02 18:56:57.773648",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Master Payout",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -38,8 +38,8 @@ def normalize_status(status):
     - Strips, removes underscores, reduces spaces
     - Maps all known variants (V+Active, V+ Active, etc.) to one canonical string
     """
-    if not status or str(status).strip().upper() == "#N/A":
-        return None
+    if not status or str(status).strip().upper() in ["", "#N/A", "NA", "N/A", "NULL", "NONE", "NAN"]:
+        return "Inactive"
     
     # 1. Standardize formatting (Uppercase, No underscores, Single spaces)
     s = str(status).strip().upper().replace("_", " ")
@@ -188,9 +188,12 @@ def execute_import():
                 if label in excel_to_field:
                     fname = excel_to_field[label]
                     val = row[i] if i < len(row) else None
-                    if val is not None and str(val).strip().upper() == "#N/A": val = None
+                    val = row[i] if i < len(row) else None
+                    if val is not None and str(val).strip().upper() == "#N/A":
+                        if fname != "activation_status":
+                            val = None
                     
-                    if val and fname == "activation_status":
+                    if fname == "activation_status":
                         val = normalize_status(val)
                     elif val and isinstance(val, str):
                         val = val.strip()
@@ -225,31 +228,27 @@ def execute_import():
             doc_data["arn_no"] = arn_no
 
             # REFINEMENT: Activation Status State-Transition Logic
-            new_status = doc_data.get("activation_status")
+            new_status = doc_data.get("activation_status") # Normalized at source
             if arn_no in existing_records:
-                # 1. Fetch current status from DB
-                old_status = frappe.db.get_value("DSA Dump", existing_records[arn_no]["name"], "activation_status")
+                # 1. Fetch current status from DB (Normalize for comparison)
+                old_status = normalize_status(frappe.db.get_value("DSA Dump", existing_records[arn_no]["name"], "activation_status"))
                 
-                # 2. Rule: Never overwrite with Blank/Null/#N/A if old data exists
-                if not new_status or str(new_status).strip().upper() == "#N/A":
+                # 2. Guard: Never overwrite with Blank/Null
+                if not new_status:
                     doc_data.pop("activation_status", None)
                 else:
                     # 3. Rule: Check Priority (Prevent Downgrades)
-                    new_status_cleaned = normalize_status(new_status)
-                    old_status_cleaned = normalize_status(old_status)
-                    
-                    # Manual Override for "Card closed"
-                    if new_status_cleaned == "Card closed":
-                        pass # Allow update
+                    if new_status == "Card closed":
+                        pass
                     else:
-                        new_rank = ACTIVATION_RANK.get(new_status_cleaned, 0)
-                        old_rank = ACTIVATION_RANK.get(old_status_cleaned, 0)
+                        new_rank = ACTIVATION_RANK.get(new_status, 0)
+                        old_rank = ACTIVATION_RANK.get(old_status, 0)
                         
-                        # Update if NEW rank is HIGHER OR EQUAL (to ensure canonical string is saved)
                         if new_rank < old_rank:
                             doc_data.pop("activation_status", None)
                         else:
-                            doc_data["activation_status"] = new_status_cleaned
+                            # New status is higher/equal, keep the normalized value in doc_data
+                            pass
 
             arn_date = parse_date_from_arn(arn_no)
             if arn_date:
