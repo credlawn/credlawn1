@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2026-04-02 18:54:23.674926",
  "doctype": "DocType",
@@ -108,9 +109,10 @@
   }
  ],
  "grid_page_length": 50,
+ "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 19:18:23.400016",
+ "modified": "2026-04-02 19:27:47.854118",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Master Payout",
