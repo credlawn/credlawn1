@@ -1,6 +1,7 @@
 # Copyright (c) 2026, Credlawn India and contributors
 # For license information, please see license.txt
 
+import frappe
 from frappe.model.document import Document
 from frappe.utils import getdate
 
@@ -10,6 +11,7 @@ class MasterPayout(Document):
 		self.set_sourcing_month()
 		self.set_prime_month()
 		self.set_po_type()
+		self.set_employee_details()
 
 	def set_sourcing_month(self):
 		if not self.arn_no:
@@ -48,3 +50,21 @@ class MasterPayout(Document):
 			self.po_type = "Income"
 		elif self.po_amount < 0:
 			self.po_type = "Deduction"
+
+	def set_employee_details(self):
+		if not self.arn_no:
+			return
+
+		bpa_record = frappe.db.get_value(
+			"BPA Records", 
+			{"arn_no": self.arn_no}, 
+			["employee_name", "employee_code"], 
+			as_dict=True
+		)
+
+		if bpa_record:
+			self.employee_name = bpa_record.employee_name
+			self.employee_code = bpa_record.employee_code
+		else:
+			self.employee_name = "Unmapped"
+			self.employee_code = "0"

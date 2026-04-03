@@ -21,7 +21,13 @@
   "column_break_rmrk",
   "po_month",
   "column_break_mlvh",
-  "decision_date"
+  "decision_date",
+  "employee_section",
+  "employee_name",
+  "column_break_vwlp",
+  "employee_code",
+  "column_break_neqa",
+  "column_break_hniw"
  ],
  "fields": [
   {
@@ -113,13 +119,40 @@
    "fieldtype": "Select",
    "label": "PO Type",
    "options": "\nIncome\nDeduction"
+  },
+  {
+   "fieldname": "employee_section",
+   "fieldtype": "Section Break",
+   "label": "Employee"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_vwlp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "column_break_neqa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hniw",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-02 19:47:53.731757",
+ "modified": "2026-04-03 11:08:30.822728",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Master Payout",
