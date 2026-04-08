@@ -108,11 +108,10 @@
   },
   {
    "fieldname": "ipa_status",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "IPA Status",
-   "options": "\nAPPROVE\nDECLINE"
+   "label": "IPA Status"
   },
   {
    "fieldname": "section_break_mmvp",
@@ -148,11 +147,10 @@
   },
   {
    "fieldname": "dap_final_flag",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "DAP Final Flag",
-   "options": "\nYes"
+   "label": "DAP Final Flag"
   },
   {
    "fieldname": "dsa_code",
@@ -409,7 +407,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-26 12:48:25.083123",
+ "modified": "2026-04-08 17:25:43.222600",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Adobe Dump",
