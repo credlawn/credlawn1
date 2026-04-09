@@ -169,6 +169,10 @@ def execute_import():
         }
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
+        skip_log = {}
+
+        def log_reason(reason):
+            skip_log[reason] = skip_log.get(reason, 0) + 1
         
         for row_idx, row in enumerate(data_rows):
             counters["processed"] += 1
@@ -208,7 +212,9 @@ def execute_import():
             
             # Application Reference Number (ARN) check
             arn_no = str(doc_data.get("arn_no", "")).strip().upper()
-            if not arn_no: continue
+            if not arn_no: 
+                log_reason("No ARN")
+                continue
             doc_data["arn_no"] = arn_no
 
             # REFINEMENT: Activation Status State-Transition Logic
@@ -242,6 +248,7 @@ def execute_import():
                     existing = existing_records[arn_no]
                     if existing["date"] and dump_till and getdate(existing["date"]) > dump_till:
                         counters["skipped"] += 1
+                        log_reason("Older Data")
                         continue
 
                     doc = frappe.get_doc("Adobe Dump", existing["name"])
@@ -254,6 +261,7 @@ def execute_import():
                     existing_records[arn_no] = {"name": doc.name, "date": dump_till}
                     counters["created"] += 1
             except Exception as e:
+                log_reason("Exec Error")
                 frappe.log_error(f"Row {row_idx + 2} Error: {str(e)}", "Adobe Dump Import")
             
             # Periodic Progress & Commit
@@ -269,6 +277,16 @@ def execute_import():
         summary = _("Import Finished! Created: {0}, Updated: {1}, Skipped: {2}").format(
             counters["created"], counters["updated"], counters["skipped"]
         )
+        
+        # Log concise summary of skip reasons (max ~140 chars)
+        if skip_log:
+            reason_str = ", ".join([f"{k}: {v}" for k, v in skip_log.items()])
+            full_msg = f"Skip Summary: {reason_str}"
+            # Ensure it fits roughly within limit if too many reasons
+            if len(full_msg) > 160:
+                full_msg = full_msg[:157] + "..."
+            frappe.log_error(full_msg, "Adobe Import Summary")
+
         publish_progress(100, summary)
 
     except Exception as e:
