@@ -278,9 +278,8 @@
   },
   {
    "fieldname": "biokyc",
-   "fieldtype": "Select",
-   "label": "BioKYC",
-   "options": "\nYes"
+   "fieldtype": "Data",
+   "label": "BioKYC"
   },
   {
    "fieldname": "payout_slab",
@@ -292,7 +291,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 18:57:14.412890",
+ "modified": "2026-04-09 15:08:34.427221",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "BPA Records",
