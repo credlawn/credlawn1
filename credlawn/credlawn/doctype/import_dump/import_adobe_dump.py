@@ -286,19 +286,25 @@ def execute_import():
                 if arn_no in existing_records:
                     existing = existing_records[arn_no]
                     
-                    # ENHANCED Date Constraint:
-                    # Skip only if BOTH the file date (dump_till) is older AND 
-                    # the row's decision date is older or same as stored decision date.
+                    # ENHANCED Date Constraint: 
+                    # Normalize dates to handle potential datetime vs date type mismatches
+                    existing_date = getdate(existing.get("date"))
+                    current_dump_date = getdate(dump_till)
                     
-                    file_is_older = existing["date"] and dump_till and getdate(existing["date"]) > dump_till
+                    file_is_older = existing_date and current_dump_date and existing_date > current_dump_date
                     
-                    new_dec_date = doc_data.get("final_decision_date")
+                    new_dec_date = getdate(doc_data.get("final_decision_date"))
                     old_dec_date = getdate(existing.get("decision_date"))
                     
+                    # Rule: Allow update if decision date is NEWER OR EQUAL
+                    # (In case of equal date, we still update to refresh other fields)
                     dec_is_older = True
-                    if new_dec_date and (not old_dec_date or new_dec_date > old_dec_date):
-                        dec_is_older = False
+                    if new_dec_date:
+                        if not old_dec_date or new_dec_date >= old_dec_date:
+                            dec_is_older = False
                     
+                    # Log skip only if the file date is strictly older AND 
+                    # the decision date didn't progress
                     if file_is_older and dec_is_older:
                         counters["skipped"] += 1
                         log_reason("Older Data")
