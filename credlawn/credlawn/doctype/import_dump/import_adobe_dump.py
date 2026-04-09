@@ -2,7 +2,52 @@ import frappe
 import datetime
 from frappe import _
 from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
-from frappe.utils import getdate
+from frappe.utils import getdate, today
+import math
+
+def parse_date(val):
+    """
+    Robustly parses dates from Excel. 
+    Handles: Python datetime, Excel serial (float/int), and Strings.
+    """
+    if not val or str(val).strip().upper() in ["", "#N/A", "NA", "N/A", "NULL", "NONE", "NAN"]:
+        return None
+        
+    # 1. Handle Excel Serial Numbers (e.g. 45385.0)
+    try:
+        if isinstance(val, (int, float)) or (isinstance(val, str) and val.replace('.','',1).isdigit()):
+            serial_val = float(val)
+            # Excel's base date is Dec 30, 1899
+            dt = datetime.datetime(1899, 12, 30) + datetime.timedelta(days=serial_val)
+            return getdate(dt)
+    except:
+        pass
+
+    # 2. String Parsing
+    if isinstance(val, str):
+        val = val.strip().replace("  ", " ")
+        if not val: return None
+
+        # Try multiple patterns in a logical fallback order
+        # We prioritize DD-MM (India) but if it fails (e.g. 05-13-2024), we try MM-DD
+        patterns = [
+            "%d-%m-%Y", "%d/%m/%Y", "%d-%b-%Y", # DD-MM-YYYY
+            "%m-%d-%Y", "%m/%d/%Y",             # MM-DD-YYYY
+            "%Y-%m-%d", "%Y/%m/%d"              # YYYY-MM-DD
+        ]
+        
+        for fmt in patterns:
+            try:
+                # Basic validation: strptime will throw error if month > 12 or day > 31
+                return getdate(datetime.datetime.strptime(val, fmt))
+            except:
+                continue
+    
+    # 3. Fallback to Frappe getdate (handles more complex strings)
+    try:
+        return getdate(val)
+    except:
+        return None
 
 # Configuration: Maps Adobe Dump Fieldnames to their respective Excel Header Labels as defined by the user
 FIELD_MAPPING = {
@@ -163,8 +208,12 @@ def execute_import():
         
         # Pre-cache existing records to handle updates efficiently
         existing_records = {
-            d.arn_no.strip().upper(): {"name": d.name, "date": d.adobe_dump_date}
-            for d in frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date"]) 
+            d.arn_no.strip().upper(): {
+                "name": d.name, 
+                "date": d.adobe_dump_date,
+                "decision_date": d.final_decision_date
+            }
+            for d in frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date", "final_decision_date"]) 
             if d.arn_no
         }
         
@@ -189,19 +238,10 @@ def execute_import():
                         if fname != "card_activation_status":
                             val = None
                     
-                    # Core Date Parsing (Handles MM/DD/YYYY and Excel Serials)
-                    if val:
-                        if fname in ["arn_date", "final_decision_date", "dap_final_date", "kyc_completion_date", "kyc_type"]:
-                            try: val = getdate(val)
-                            except: pass
-                        elif fname == "vkyc_expiry_date":
-                            try:
-                                # Prioritize numeric serial conversion for datetimes
-                                serial_val = float(val)
-                                val = datetime.datetime(1899, 12, 30) + datetime.timedelta(days=serial_val)
-                            except:
-                                try: val = getdate(val)
-                                except: pass
+                    # Core Date Parsing (Handles Excel Serials and Mixed Formats)
+                    if val is not None:
+                        if fname in ["arn_date", "final_decision_date", "dap_final_date", "kyc_completion_date", "kyc_type", "vkyc_expiry_date"]:
+                            val = parse_date(val)
                     
                     if fname == "card_activation_status":
                         val = normalize_status(val)
@@ -244,9 +284,22 @@ def execute_import():
             
             try:
                 if arn_no in existing_records:
-                    # Date Constraint: Only update if current data is older or equal
                     existing = existing_records[arn_no]
-                    if existing["date"] and dump_till and getdate(existing["date"]) > dump_till:
+                    
+                    # ENHANCED Date Constraint:
+                    # Skip only if BOTH the file date (dump_till) is older AND 
+                    # the row's decision date is older or same as stored decision date.
+                    
+                    file_is_older = existing["date"] and dump_till and getdate(existing["date"]) > dump_till
+                    
+                    new_dec_date = doc_data.get("final_decision_date")
+                    old_dec_date = getdate(existing.get("decision_date"))
+                    
+                    dec_is_older = True
+                    if new_dec_date and (not old_dec_date or new_dec_date > old_dec_date):
+                        dec_is_older = False
+                    
+                    if file_is_older and dec_is_older:
                         counters["skipped"] += 1
                         log_reason("Older Data")
                         continue
