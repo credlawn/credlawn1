@@ -219,6 +219,11 @@ def execute_import():
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
         skip_log = {}
+        
+        DEBUG_ARNS = [
+            "D26D03483763S0DP", "D26D03481455H0N3", "D26D02346613H0S2", 
+            "D26D02337859S0PB", "D26D02310861S0PB", "D26C07032897S0Q3"
+        ]
 
         def log_reason(reason):
             skip_log[reason] = skip_log.get(reason, 0) + 1
@@ -256,6 +261,14 @@ def execute_import():
                 log_reason("No ARN")
                 continue
             doc_data["arn_no"] = arn_no
+            
+            # Specific Debugging for problematic ARNs
+            if arn_no in DEBUG_ARNS:
+                in_cache = arn_no in existing_records
+                frappe.log_error(
+                    f"DEBUG ARN {arn_no}: Found in cache: {in_cache}. Attempting {'Update' if in_cache else 'Insert'}.",
+                    "Adobe Import Debug Trace"
+                )
 
             # REFINEMENT: Activation Status State-Transition Logic
             new_status = doc_data.get("card_activation_status") # Already normalized at Line 199
@@ -315,13 +328,24 @@ def execute_import():
                     doc.save(ignore_permissions=True)
                     counters["updated"] += 1
                 else:
+                    if arn_no in DEBUG_ARNS:
+                        frappe.log_error(f"DEBUG ARN {arn_no}: Proceeding to INSERT with data: {frappe.as_json(doc_data)}", "Adobe Import Debug Trace")
+                    
                     doc = frappe.get_doc(doc_data)
                     doc.insert(ignore_permissions=True)
                     existing_records[arn_no] = {"name": doc.name, "date": dump_till}
                     counters["created"] += 1
+
+                    if arn_no in DEBUG_ARNS:
+                        frappe.log_error(f"DEBUG ARN {arn_no}: INSERT SUCCESS. New name: {doc.name}", "Adobe Import Debug Trace")
+
             except Exception as e:
                 log_reason("Exec Error")
-                frappe.log_error(f"Row {row_idx + 2} Error: {str(e)}", "Adobe Dump Import")
+                error_msg = f"Row {row_idx + 2} (ARN: {arn_no}) Error: {str(e)}"
+                frappe.log_error(error_msg, "Adobe Dump Import")
+                
+                if arn_no in DEBUG_ARNS:
+                    frappe.log_error(f"DEBUG ARN {arn_no} CRITICAL FAILURE: {frappe.get_traceback()}", "Adobe Import Debug Trace")
             
             # Periodic Progress & Commit
             if counters["processed"] % 50 == 0 or counters["processed"] == total_rows:
