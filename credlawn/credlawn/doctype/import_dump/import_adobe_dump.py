@@ -207,15 +207,25 @@ def execute_import():
         total_rows = len(data_rows)
         
         # Pre-cache existing records to handle updates efficiently
-        existing_records = {
-            d.arn_no.strip().upper(): {
+        # Also detect duplicates to warn the user
+        existing_records = {}
+        all_recs = frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date", "final_decision_date"])
+        
+        for d in all_recs:
+            if not d.arn_no: continue
+            clean_arn = d.arn_no.strip().upper()
+            
+            if clean_arn in existing_records:
+                # Warning for duplicates (already exists in cache)
+                msg = f"Data Integrity Warning: ARN {clean_arn} found in multiple records: {existing_records[clean_arn]['name']} and {d.name}."
+                frappe.log_error(msg, "Adobe Import Integrity")
+            
+            existing_records[clean_arn] = {
                 "name": d.name, 
                 "date": d.adobe_dump_date,
-                "decision_date": d.final_decision_date
+                "decision_date": d.final_decision_date,
+                "raw_arn": d.arn_no # Store raw for debugging
             }
-            for d in frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date", "final_decision_date"]) 
-            if d.arn_no
-        }
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
         skip_log = {}
@@ -265,10 +275,14 @@ def execute_import():
             # Specific Debugging for problematic ARNs
             if arn_no in DEBUG_ARNS:
                 in_cache = arn_no in existing_records
-                frappe.log_error(
-                    f"DEBUG ARN {arn_no}: Found in cache: {in_cache}. Attempting {'Update' if in_cache else 'Insert'}.",
-                    "Adobe Import Debug Trace"
-                )
+                existing_info = existing_records.get(arn_no, {})
+                msg = f"DEBUG ARN {arn_no}: Found in cache: {in_cache}."
+                if in_cache:
+                    msg += (
+                        f"\n- Database Record ID: {existing_info.get('name')}"
+                        f"\n- Raw ARN in DB: '{existing_info.get('raw_arn')}' (check for hidden spaces)"
+                    )
+                frappe.log_error(msg, "Adobe Import Debug Trace")
 
             # REFINEMENT: Activation Status State-Transition Logic
             new_status = doc_data.get("card_activation_status") # Already normalized at Line 199
@@ -318,9 +332,22 @@ def execute_import():
                     
                     # Log skip only if the file date is strictly older AND 
                     # the decision date didn't progress
+                    if arn_no in DEBUG_ARNS:
+                        debug_msg = (
+                            f"DEBUG ARN {arn_no} (Update) Date Check:\n"
+                            f"- DB File Date: {existing_date}\n"
+                            f"- Input File Date: {current_dump_date}\n"
+                            f"- DB Decision Date: {old_dec_date}\n"
+                            f"- Input Decision Date: {new_dec_date}\n"
+                            f"- Outcome: file_is_older={file_is_older}, dec_is_older={dec_is_older}"
+                        )
+                        frappe.log_error(debug_msg, "Adobe Import Debug Trace")
+
                     if file_is_older and dec_is_older:
                         counters["skipped"] += 1
                         log_reason("Older Data")
+                        if arn_no in DEBUG_ARNS:
+                            frappe.log_error(f"DEBUG ARN {arn_no}: SKIPPING because it is determined to be older data.", "Adobe Import Debug Trace")
                         continue
 
                     doc = frappe.get_doc("Adobe Dump", existing["name"])
