@@ -209,7 +209,12 @@ def execute_import():
         # Pre-cache existing records to handle updates efficiently
         # Also detect duplicates to warn the user
         existing_records = {}
-        all_recs = frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date", "final_decision_date"])
+        all_recs = frappe.get_all(
+            "Adobe Dump", 
+            fields=["name", "arn_no", "adobe_dump_date", "final_decision_date", "docstatus", "owner"],
+            # Explicitly checking for all docstatuses in case of trashed/cancelled survival
+            filters={"docstatus": ["<", 3]} 
+        )
         
         for d in all_recs:
             if not d.arn_no: continue
@@ -224,7 +229,9 @@ def execute_import():
                 "name": d.name, 
                 "date": d.adobe_dump_date,
                 "decision_date": d.final_decision_date,
-                "raw_arn": d.arn_no # Store raw for debugging
+                "raw_arn": d.arn_no, # Store raw for debugging
+                "owner": d.owner,
+                "docstatus": d.docstatus
             }
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
@@ -280,7 +287,9 @@ def execute_import():
                 if in_cache:
                     msg += (
                         f"\n- Database Record ID: {existing_info.get('name')}"
-                        f"\n- Raw ARN in DB: '{existing_info.get('raw_arn')}' (check for hidden spaces)"
+                        f"\n- Raw ARN in DB: '{existing_info.get('raw_arn')}'"
+                        f"\n- Owner: {existing_info.get('owner')}"
+                        f"\n- DocStatus: {existing_info.get('docstatus')}"
                     )
                 frappe.log_error(msg, "Adobe Import Debug Trace")
 

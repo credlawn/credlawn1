@@ -77,6 +77,8 @@
   {
    "fieldname": "arn_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "ARN No",
    "search_index": 1
   },
@@ -407,7 +409,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-08 17:25:43.222600",
+ "modified": "2026-04-10 09:44:21.779401",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Adobe Dump",
