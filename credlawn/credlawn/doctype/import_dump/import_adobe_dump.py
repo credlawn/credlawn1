@@ -207,40 +207,19 @@ def execute_import():
         total_rows = len(data_rows)
         
         # Pre-cache existing records to handle updates efficiently
-        # Also detect duplicates to warn the user
-        existing_records = {}
-        all_recs = frappe.get_all(
-            "Adobe Dump", 
-            fields=["name", "arn_no", "adobe_dump_date", "final_decision_date", "docstatus", "owner"],
-            # Explicitly checking for all docstatuses in case of trashed/cancelled survival
-            filters={"docstatus": ["<", 3]} 
-        )
-        
-        for d in all_recs:
-            if not d.arn_no: continue
-            clean_arn = d.arn_no.strip().upper()
-            
-            if clean_arn in existing_records:
-                # Warning for duplicates (already exists in cache)
-                msg = f"Data Integrity Warning: ARN {clean_arn} found in multiple records: {existing_records[clean_arn]['name']} and {d.name}."
-                frappe.log_error(msg, "Adobe Import Integrity")
-            
-            existing_records[clean_arn] = {
+        existing_records = {
+            d.arn_no.strip().upper(): {
                 "name": d.name, 
                 "date": d.adobe_dump_date,
-                "decision_date": d.final_decision_date,
-                "raw_arn": d.arn_no, # Store raw for debugging
-                "owner": d.owner,
-                "docstatus": d.docstatus
+                "decision_date": d.final_decision_date
             }
+            for d in frappe.get_all("Adobe Dump", fields=["name", "arn_no", "adobe_dump_date", "final_decision_date"]) 
+            if d.arn_no
+        }
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
         skip_log = {}
-        
-        DEBUG_ARNS = [
-            "D26D03483763S0DP", "D26D03481455H0N3", "D26D02346613H0S2", 
-            "D26D02337859S0PB", "D26D02310861S0PB", "D26C07032897S0Q3"
-        ]
+        error_details = []
 
         def log_reason(reason):
             skip_log[reason] = skip_log.get(reason, 0) + 1
@@ -278,20 +257,6 @@ def execute_import():
                 log_reason("No ARN")
                 continue
             doc_data["arn_no"] = arn_no
-            
-            # Specific Debugging for problematic ARNs
-            if arn_no in DEBUG_ARNS:
-                in_cache = arn_no in existing_records
-                existing_info = existing_records.get(arn_no, {})
-                msg = f"DEBUG ARN {arn_no}: Found in cache: {in_cache}."
-                if in_cache:
-                    msg += (
-                        f"\n- Database Record ID: {existing_info.get('name')}"
-                        f"\n- Raw ARN in DB: '{existing_info.get('raw_arn')}'"
-                        f"\n- Owner: {existing_info.get('owner')}"
-                        f"\n- DocStatus: {existing_info.get('docstatus')}"
-                    )
-                frappe.log_error(msg, "Adobe Import Debug Trace")
 
             # REFINEMENT: Activation Status State-Transition Logic
             new_status = doc_data.get("card_activation_status") # Already normalized at Line 199
@@ -341,22 +306,9 @@ def execute_import():
                     
                     # Log skip only if the file date is strictly older AND 
                     # the decision date didn't progress
-                    if arn_no in DEBUG_ARNS:
-                        debug_msg = (
-                            f"DEBUG ARN {arn_no} (Update) Date Check:\n"
-                            f"- DB File Date: {existing_date}\n"
-                            f"- Input File Date: {current_dump_date}\n"
-                            f"- DB Decision Date: {old_dec_date}\n"
-                            f"- Input Decision Date: {new_dec_date}\n"
-                            f"- Outcome: file_is_older={file_is_older}, dec_is_older={dec_is_older}"
-                        )
-                        frappe.log_error(debug_msg, "Adobe Import Debug Trace")
-
                     if file_is_older and dec_is_older:
                         counters["skipped"] += 1
                         log_reason("Older Data")
-                        if arn_no in DEBUG_ARNS:
-                            frappe.log_error(f"DEBUG ARN {arn_no}: SKIPPING because it is determined to be older data.", "Adobe Import Debug Trace")
                         continue
 
                     doc = frappe.get_doc("Adobe Dump", existing["name"])
@@ -364,24 +316,14 @@ def execute_import():
                     doc.save(ignore_permissions=True)
                     counters["updated"] += 1
                 else:
-                    if arn_no in DEBUG_ARNS:
-                        frappe.log_error(f"DEBUG ARN {arn_no}: Proceeding to INSERT with data: {frappe.as_json(doc_data)}", "Adobe Import Debug Trace")
-                    
                     doc = frappe.get_doc(doc_data)
                     doc.insert(ignore_permissions=True)
                     existing_records[arn_no] = {"name": doc.name, "date": dump_till}
                     counters["created"] += 1
 
-                    if arn_no in DEBUG_ARNS:
-                        frappe.log_error(f"DEBUG ARN {arn_no}: INSERT SUCCESS. New name: {doc.name}", "Adobe Import Debug Trace")
-
             except Exception as e:
                 log_reason("Exec Error")
-                error_msg = f"Row {row_idx + 2} (ARN: {arn_no}) Error: {str(e)}"
-                frappe.log_error(error_msg, "Adobe Dump Import")
-                
-                if arn_no in DEBUG_ARNS:
-                    frappe.log_error(f"DEBUG ARN {arn_no} CRITICAL FAILURE: {frappe.get_traceback()}", "Adobe Import Debug Trace")
+                error_details.append(f"Row {row_idx + 2} (ARN: {arn_no}) Error: {str(e)}")
             
             # Periodic Progress & Commit
             if counters["processed"] % 50 == 0 or counters["processed"] == total_rows:
@@ -397,14 +339,21 @@ def execute_import():
             counters["created"], counters["updated"], counters["skipped"]
         )
         
-        # Log concise summary of skip reasons (max ~140 chars)
-        if skip_log:
-            reason_str = ", ".join([f"{k}: {v}" for k, v in skip_log.items()])
-            full_msg = f"Skip Summary: {reason_str}"
-            # Ensure it fits roughly within limit if too many reasons
-            if len(full_msg) > 160:
-                full_msg = full_msg[:157] + "..."
-            frappe.log_error(full_msg, "Adobe Import Summary")
+        # Consolidate all logging into a single massive 'Message' payload
+        if skip_log or error_details:
+            details_str = "--- Skip Summary ---\n"
+            for k, v in skip_log.items():
+                details_str += f"{k}: {v} records\n"
+            
+            if error_details:
+                details_str += "\n--- Row Errors ---\n"
+                details_str += "\n".join(error_details)
+            
+            # Using named parameters guarantees title <= 140 chars while message handles text.
+            frappe.log_error(
+                title=f"Adobe Import Summary ({counters['processed']} rows)", 
+                message=details_str
+            )
 
         publish_progress(100, summary)
 

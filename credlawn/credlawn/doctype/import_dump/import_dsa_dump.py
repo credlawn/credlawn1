@@ -3,6 +3,43 @@ import datetime
 from frappe import _
 from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
 from frappe.utils import getdate
+import math
+
+def parse_date(val):
+    """
+    Robustly parses dates from Excel. 
+    Handles: Python datetime, Excel serial (float/int), and Strings.
+    """
+    if not val or str(val).strip().upper() in ["", "#N/A", "NA", "N/A", "NULL", "NONE", "NAN"]:
+        return None
+        
+    try:
+        if isinstance(val, (int, float)) or (isinstance(val, str) and val.replace('.','',1).isdigit()):
+            dt = datetime.datetime(1899, 12, 30) + datetime.timedelta(days=float(val))
+            return getdate(dt)
+    except:
+        pass
+
+    if isinstance(val, str):
+        val = val.strip().replace("  ", " ")
+        if not val: return None
+
+        patterns = [
+            "%d-%m-%Y", "%d/%m/%Y", "%d-%b-%Y", 
+            "%m-%d-%Y", "%m/%d/%Y",             
+            "%Y-%m-%d", "%Y/%m/%d"              
+        ]
+        for fmt in patterns:
+            try:
+                return getdate(datetime.datetime.strptime(val, fmt))
+            except:
+                continue
+    
+    try:
+        return getdate(val)
+    except:
+        return None
+
 
 FIELD_MAPPING = {
     "arn_no": "APPL_REF",
@@ -169,6 +206,12 @@ def execute_import():
         }
         
         counters = {"created": 0, "updated": 0, "skipped": 0, "processed": 0}
+        skip_log = {}
+        error_details = []
+
+        def log_reason(reason):
+            skip_log[reason] = skip_log.get(reason, 0) + 1
+
         valid_rows = []
         
         for r in all_data_rows:
@@ -188,7 +231,6 @@ def execute_import():
                 if label in excel_to_field:
                     fname = excel_to_field[label]
                     val = row[i] if i < len(row) else None
-                    val = row[i] if i < len(row) else None
                     if val is not None and str(val).strip().upper() == "#N/A":
                         if fname != "activation_status":
                             val = None
@@ -199,20 +241,9 @@ def execute_import():
                         val = val.strip()
 
                     if val and fname == "final_decision_date":
-                        try:
-                            if isinstance(val, str) and "/" in val:
-                                try:
-                                    val = datetime.datetime.strptime(val.strip(), "%m/%d/%Y").date()
-                                except:
-                                    val = getdate(val)
-                            else:
-                                val = getdate(val)
-                            
-                            # Populate decision_month automatically (Format: Mar-26)
-                            if val:
-                                doc_data["decision_month"] = val.strftime("%b-%y")
-                        except:
-                            pass
+                        val = parse_date(val)
+                        if val:
+                            doc_data["decision_month"] = val.strftime("%b-%y")
                     
                     doc_data[fname] = val
                     
@@ -224,7 +255,9 @@ def execute_import():
                         doc_data["final_decision"] = "Decline"
 
             arn_no = str(doc_data.get("arn_no", "")).strip().upper()
-            if not arn_no: continue
+            if not arn_no: 
+                log_reason("No ARN")
+                continue
             doc_data["arn_no"] = arn_no
 
             # REFINEMENT: Activation Status State-Transition Logic
@@ -257,8 +290,13 @@ def execute_import():
             try:
                 if arn_no in existing_records:
                     existing = existing_records[arn_no]
-                    if existing["date"] and dump_till and getdate(existing["date"]) > dump_till:
+                    
+                    existing_date = getdate(existing.get("date"))
+                    current_dump_date = getdate(dump_till)
+                    
+                    if existing_date and current_dump_date and existing_date > current_dump_date:
                         counters["skipped"] += 1
+                        log_reason("Older Data")
                         continue
 
                     doc = frappe.get_doc("DSA Dump", existing["name"])
@@ -271,7 +309,8 @@ def execute_import():
                     existing_records[arn_no] = {"name": doc.name, "date": dump_till}
                     counters["created"] += 1
             except Exception as e:
-                frappe.log_error(f"DSA Row {row_idx + 2} Error: {str(e)}", "DSA Dump Import")
+                log_reason("Exec Error")
+                error_details.append(f"DSA Row {row_idx + 2} (ARN: {arn_no}) Error: {str(e)}")
             
             if counters["processed"] % 50 == 0 or counters["processed"] == total_rows:
                 percentage = int((counters["processed"] / total_rows) * 100)
@@ -285,6 +324,21 @@ def execute_import():
         summary = _("DSA Import Finished! Created: {0}, Updated: {1}, Skipped: {2}").format(
             counters["created"], counters["updated"], counters["skipped"]
         )
+
+        if skip_log or error_details:
+            details_str = "--- Skip Summary ---\n"
+            for k, v in skip_log.items():
+                details_str += f"{k}: {v} records\n"
+            
+            if error_details:
+                details_str += "\n--- Row Errors ---\n"
+                details_str += "\n".join(error_details)
+            
+            frappe.log_error(
+                title=f"DSA Import Summary ({counters['processed']} rows)", 
+                message=details_str
+            )
+
         publish_progress(100, summary)
 
     except Exception as e:
