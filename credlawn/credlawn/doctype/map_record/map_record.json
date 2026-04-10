@@ -1,0 +1,105 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-10 14:00:23.014385",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "source_file",
+  "column_break_iyhl",
+  "mapped_file",
+  "section_break_config",
+  "target_doctype",
+  "excel_lookup_column",
+  "column_break_config_2",
+  "doctype_lookup_field",
+  "fields_to_extract",
+  "section_break_mswq",
+  "status_summary"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_file",
+   "fieldtype": "Attach",
+   "label": "Source File"
+  },
+  {
+   "fieldname": "column_break_iyhl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mapped_file",
+   "fieldtype": "Attach",
+   "label": "Mapped File",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_config",
+   "fieldtype": "Section Break",
+   "label": "Mapping Configuration"
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "label": "Target DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "excel_lookup_column",
+   "fieldtype": "Select",
+   "label": "Excel Lookup Column"
+  },
+  {
+   "fieldname": "column_break_config_2",
+   "column_break": 1,
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "doctype_lookup_field",
+   "fieldtype": "Select",
+   "label": "DocType Lookup Field"
+  },
+  {
+   "fieldname": "fields_to_extract",
+   "fieldtype": "Small Text",
+   "label": "Fields to Extract",
+   "description": "Comma separated fieldnames (e.g. lead_status, city, product)"
+  },
+  {
+   "fieldname": "section_break_mswq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "status_summary",
+   "fieldtype": "HTML",
+   "label": "Status Summary"
+  }
+ ],
+ "grid_page_length": 50,
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-04-10 14:01:38.249082",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Map Record",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
