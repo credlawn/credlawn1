@@ -81,7 +81,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Approved Status",
-   "options": "Pending\nPresent\nAbsent\nHalf-day\nLeave"
+   "options": "Pending\nFull-day\nPresent\nAbsent\nHalf-day\nLeave\nHoliday"
   },
   {
    "fieldname": "pb_id",
@@ -212,7 +212,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-01 09:52:32.219899",
+ "modified": "2026-04-10 13:43:48.986924",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "Attendance",

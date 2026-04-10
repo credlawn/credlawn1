@@ -1,0 +1,364 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-10 12:03:34.146334",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "time_line_section",
+  "import_date",
+  "data_code",
+  "column_break_frji",
+  "lead_status",
+  "custom_code",
+  "column_break_hbki",
+  "lead_status_date",
+  "last_shuffle_date",
+  "column_break_yeza",
+  "lead_status_time",
+  "customer_details_section",
+  "customer_name",
+  "employee_name",
+  "column_break_ukeb",
+  "mobile_no",
+  "data_status",
+  "column_break_gsog",
+  "city",
+  "column_break_llwh",
+  "segment",
+  "call_details_section",
+  "total_calls",
+  "allocation_count",
+  "column_break_gkql",
+  "connected_calls",
+  "shuffle_count",
+  "column_break_nchv",
+  "connected_duration",
+  "employee_count",
+  "column_break_uwkx",
+  "connected_employee",
+  "data_details_section",
+  "old_arn_no",
+  "employer",
+  "column_break_mbnu",
+  "old_decision_date",
+  "product",
+  "column_break_wqhy",
+  "promo_code",
+  "column_break_tzzr",
+  "decline_reason",
+  "section_break_pedy",
+  "pb_created",
+  "clean_from_pb",
+  "column_break_nbfh",
+  "pb_updated",
+  "deleted_from_pb",
+  "column_break_xuhy",
+  "pb_id",
+  "no_reallocation",
+  "column_break_czdb",
+  "employee_code",
+  "data_sub_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "time_line_section",
+   "fieldtype": "Section Break",
+   "label": "Time Line"
+  },
+  {
+   "fieldname": "import_date",
+   "fieldtype": "Date",
+   "label": "Import Date"
+  },
+  {
+   "fieldname": "data_code",
+   "fieldtype": "Data",
+   "label": "Data Code"
+  },
+  {
+   "fieldname": "column_break_frji",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lead_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Lead Status"
+  },
+  {
+   "fieldname": "custom_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Custom Code"
+  },
+  {
+   "fieldname": "column_break_hbki",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lead_status_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Lead Status Date"
+  },
+  {
+   "fieldname": "last_shuffle_date",
+   "fieldtype": "Date",
+   "label": "Last Shuffle Date"
+  },
+  {
+   "fieldname": "column_break_yeza",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lead_status_time",
+   "fieldtype": "Time",
+   "label": "Lead Status Time"
+  },
+  {
+   "fieldname": "customer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break_ukeb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "data_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Data Status"
+  },
+  {
+   "fieldname": "column_break_gsog",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "column_break_llwh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "segment",
+   "fieldtype": "Data",
+   "label": "Segment"
+  },
+  {
+   "fieldname": "call_details_section",
+   "fieldtype": "Section Break",
+   "label": "Call Details"
+  },
+  {
+   "fieldname": "total_calls",
+   "fieldtype": "Int",
+   "label": "Total Calls"
+  },
+  {
+   "fieldname": "allocation_count",
+   "fieldtype": "Int",
+   "label": "Allocation Count"
+  },
+  {
+   "fieldname": "column_break_gkql",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "connected_calls",
+   "fieldtype": "Int",
+   "label": "Connected Calls"
+  },
+  {
+   "fieldname": "shuffle_count",
+   "fieldtype": "Int",
+   "label": "Shuffle Count"
+  },
+  {
+   "fieldname": "column_break_nchv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "connected_duration",
+   "fieldtype": "Int",
+   "label": "Connected Duration"
+  },
+  {
+   "fieldname": "employee_count",
+   "fieldtype": "Int",
+   "label": "Employee Count"
+  },
+  {
+   "fieldname": "column_break_uwkx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "connected_employee",
+   "fieldtype": "Int",
+   "label": "Connected Employee"
+  },
+  {
+   "fieldname": "data_details_section",
+   "fieldtype": "Section Break",
+   "label": "Data Details"
+  },
+  {
+   "fieldname": "old_arn_no",
+   "fieldtype": "Data",
+   "label": "Old ARN No"
+  },
+  {
+   "fieldname": "employer",
+   "fieldtype": "Data",
+   "label": "Employer"
+  },
+  {
+   "fieldname": "column_break_mbnu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "old_decision_date",
+   "fieldtype": "Date",
+   "label": "Old Decision Date"
+  },
+  {
+   "fieldname": "product",
+   "fieldtype": "Data",
+   "label": "Product"
+  },
+  {
+   "fieldname": "column_break_wqhy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "promo_code",
+   "fieldtype": "Data",
+   "label": "Promo Code"
+  },
+  {
+   "fieldname": "column_break_tzzr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "decline_reason",
+   "fieldtype": "Data",
+   "label": "Decline Reason"
+  },
+  {
+   "fieldname": "section_break_pedy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "pb_created",
+   "fieldtype": "Data",
+   "label": "PB Created",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "clean_from_pb",
+   "fieldtype": "Check",
+   "label": "Clean From PB"
+  },
+  {
+   "fieldname": "column_break_nbfh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_updated",
+   "fieldtype": "Data",
+   "label": "PB Updated",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "deleted_from_pb",
+   "fieldtype": "Check",
+   "label": "Deleted From PB",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_xuhy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_id",
+   "fieldtype": "Data",
+   "label": "PB ID",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "no_reallocation",
+   "fieldtype": "Check",
+   "label": "No Reallocation"
+  },
+  {
+   "fieldname": "column_break_czdb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "data_sub_code",
+   "fieldtype": "Data",
+   "label": "Data Sub Code"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-10 12:03:34.146334",
+ "modified_by": "Administrator",
+ "module": "Credlawn",
+ "name": "Master Database",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name"
+}
