@@ -54,16 +54,18 @@ frappe.listview_settings['IPA Records'] = {
             });
         }, __('Task'));
 
-        listview.page.add_inner_button(__('Full Sync'), function () {
+        listview.page.add_inner_button(__('Legacy Sync'), function () {
             frappe.confirm(
-                __('Are you sure you want to perform a Full Sync? This will re-check all records from Pocketbase regardless of the last sync time.'),
+                __('Are you sure you want to heal legacy data? This will populate PB_ID and Active Database values for existing records based on ARN No.'),
                 function () {
+                    frappe.show_progress(__('Healing Data'), 0, 100, __('Searching matches...'));
                     frappe.call({
-                        method: 'credlawn.credlawn.doctype.ipa_records.pull_ipa_code.pull_ipa_data',
-                        args: { full_sync: true },
+                        method: 'credlawn.credlawn.doctype.ipa_records.pull_ipa_code.one_time_legacy_sync',
                         callback: function (r) {
+                            frappe.hide_progress();
                             if (r.message) {
-                                frappe.show_alert({ message: r.message, indicator: 'green' });
+                                frappe.msgprint(r.message);
+                                listview.refresh();
                             }
                         }
                     });

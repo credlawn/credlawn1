@@ -6,18 +6,27 @@
  "engine": "InnoDB",
  "field_order": [
   "customer_details_section",
+  "employee_name",
+  "employee_code",
+  "ip_status",
+  "column_break_tquh",
   "customer_name",
   "mobile_no",
   "date_of_birth",
-  "column_break_tquh",
-  "employee_name",
-  "employee_code",
-  "unique",
   "column_break_pqeh",
-  "ip_status",
   "arn_date",
   "arn_no",
   "arn_month",
+  "login_date",
+  "section_break_ntku",
+  "data_code",
+  "old_arn_no",
+  "column_break_qlcj",
+  "custom_code",
+  "old_decision_date",
+  "column_break_jgnt",
+  "unique",
+  "gap",
   "bank_status_section",
   "bank_status",
   "column_break_svbq",
@@ -29,7 +38,14 @@
   "column_break_qjds",
   "final_approved_count_verified",
   "column_break_xnvm",
-  "dsa_dump_validated"
+  "dsa_dump_validated",
+  "helper_section",
+  "pb_created",
+  "update_error",
+  "column_break_kfwm",
+  "pb_updated",
+  "column_break_ivgc",
+  "pb_id"
  ],
  "fields": [
   {
@@ -164,13 +180,93 @@
    "fieldname": "bank_status_month",
    "fieldtype": "Data",
    "label": "Bank Status Month"
+  },
+  {
+   "fieldname": "helper_section",
+   "fieldtype": "Section Break",
+   "label": "Helper"
+  },
+  {
+   "fieldname": "pb_created",
+   "fieldtype": "Data",
+   "label": "PB Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_kfwm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_updated",
+   "fieldtype": "Data",
+   "label": "PB Updated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ivgc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pb_id",
+   "fieldtype": "Data",
+   "label": "PB ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "data_code",
+   "fieldtype": "Data",
+   "label": "Data Code"
+  },
+  {
+   "fieldname": "custom_code",
+   "fieldtype": "Data",
+   "label": "Custom Code"
+  },
+  {
+   "fieldname": "section_break_ntku",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_qlcj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_jgnt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_date",
+   "fieldtype": "Date",
+   "label": "Login Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "update_error",
+   "fieldtype": "Check",
+   "label": "Update Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "old_arn_no",
+   "fieldtype": "Data",
+   "label": "Old ARN No"
+  },
+  {
+   "fieldname": "gap",
+   "fieldtype": "Int",
+   "label": "GAP"
+  },
+  {
+   "fieldname": "old_decision_date",
+   "fieldtype": "Date",
+   "label": "Old Decision Date"
   }
  ],
  "grid_page_length": 50,
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-26 12:30:41.580761",
+ "modified": "2026-04-11 10:48:08.002287",
  "modified_by": "Administrator",
  "module": "Credlawn",
  "name": "IPA Records",
