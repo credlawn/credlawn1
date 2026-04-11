@@ -1,15 +1,20 @@
 frappe.ui.form.on('Map Record', {
     refresh: function(frm) {
-        // Load options if data already exists on refresh
-        if (frm.doc.source_file) {
-            update_excel_headers(frm);
-        }
-        if (frm.doc.target_doctype) {
-            update_doctype_fields(frm);
-        }
+        // Step 1: Filter Target DocType
+        frm.set_query('target_doctype', function() {
+            return { filters: { module: 'Credlawn' } };
+        });
+
+        // Step 2: Set Initial Visibility (Pro Wizard Feel)
+        toggle_pro_visibility(frm);
+
+        // Load options if data already exists
+        if (frm.doc.source_file) update_excel_headers(frm);
+        if (frm.doc.target_doctype) update_doctype_fields(frm);
 
         // Action Button
         frm.add_custom_button(__('Run Mapping Engine'), function() {
+            // ... (keep existing validation and call)
             if (!frm.doc.source_file) {
                 frappe.msgprint(__('Please attach a Source file.'));
                 return;
@@ -37,7 +42,7 @@ frappe.ui.form.on('Map Record', {
         frm.set_df_property('fields_to_extract', 'description', 
             '<button class="btn btn-xs btn-default" id="btn-pick-fields" style="margin-top: 5px;">Pick Fields from List</button>');
 
-        $(frm.wrapper).on('click', '#btn-pick-fields', () => {
+        $(frm.wrapper).off('click', '#btn-pick-fields').on('click', '#btn-pick-fields', () => {
             if (!frm.doc.target_doctype) {
                 frappe.msgprint(__('Please select Target DocType first.'));
                 return;
@@ -77,6 +82,7 @@ frappe.ui.form.on('Map Record', {
         } else {
             frm.set_df_property('excel_lookup_column', 'options', []);
         }
+        toggle_pro_visibility(frm);
     },
 
     target_doctype: function(frm) {
@@ -85,8 +91,25 @@ frappe.ui.form.on('Map Record', {
         } else {
             frm.set_df_property('doctype_lookup_field', 'options', []);
         }
+        toggle_pro_visibility(frm);
     }
 });
+
+/**
+ * Professional Visibility Control (Wizard-style)
+ */
+function toggle_pro_visibility(frm) {
+    // Show/Hide Section
+    let has_initial_setup = frm.doc.source_file || frm.doc.target_doctype;
+    frm.toggle_display('section_break_config', has_initial_setup);
+
+    // Show excel lookup only if file exists
+    frm.toggle_display('excel_lookup_column', frm.doc.source_file);
+
+    // Show doctype fields only if DT is selected
+    frm.toggle_display('doctype_lookup_field', frm.doc.target_doctype);
+    frm.toggle_display('fields_to_extract', frm.doc.target_doctype);
+}
 
 /**
  * Fetches headers from the attached Excel and updates the Select dropdown.

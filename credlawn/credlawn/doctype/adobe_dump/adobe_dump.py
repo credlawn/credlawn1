@@ -6,6 +6,33 @@ class AdobeDump(Document):
 	def autoname(self):
 		self.name = self.arn_no
 
+	def validate(self):
+		self.set_arn_month_from_arn()
+
+	def set_arn_month_from_arn(self):
+		"""
+		Parses arn_no to extract Date/Month info.
+		Format: D26D08... (D=Bank?, 26=Year, D=Month, 08=Date)
+		Result: MMM-YY (e.g., Apr-26)
+		"""
+		if self.arn_no and len(self.arn_no) >= 6:
+			# A=Jan, B=Feb, C=Mar, D=Apr, ...
+			month_map = {
+				'A': 'Jan', 'B': 'Feb', 'C': 'Mar', 'D': 'Apr',
+				'E': 'May', 'F': 'Jun', 'G': 'Jul', 'H': 'Aug',
+				'I': 'Sep', 'J': 'Oct', 'K': 'Nov', 'L': 'Dec'
+			}
+			
+			try:
+				year_code = self.arn_no[1:3] # '26'
+				month_char = self.arn_no[3].upper() # 'D'
+				month_name = month_map.get(month_char)
+				
+				if month_name:
+					self.arn_month = f"{month_name}-{year_code}"
+			except Exception:
+				pass
+
 	def on_update(self):
 		# Professional Sync: Prevents recursion and optimizes performance
 		sync_and_enrich_data(self)
