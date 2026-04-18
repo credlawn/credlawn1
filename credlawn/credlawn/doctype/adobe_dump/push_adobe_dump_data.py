@@ -4,7 +4,6 @@ from frappe.utils import now_datetime, get_datetime, add_days, getdate
 import requests
 import pytz
 from datetime import datetime
-import re
 
 @frappe.whitelist()
 def execute_push():
@@ -21,8 +20,8 @@ def execute_push():
         publish_progress(34, _("Task 1 Complete. Starting Task 2: BKYC Push..."))
         bkyc_results = task_2_update_bkyc_data()
         
-        # Task 3: Sync Activation Data
-        publish_progress(67, _("Task 2 Complete. Starting Task 3: Activation Push..."))
+        # Task 3: Sync Activation Data (BPA Source)
+        publish_progress(67, _("Task 2 Complete. Starting Task 3: Activation Sync..."))
         activation_results = task_3_sync_activation_data()
         
         # Final Summary
@@ -41,11 +40,9 @@ def execute_push():
         return {"status": "error", "message": str(e)}
 
 def task_1_create_vkyc_record():
-    """VKYC sync logic (Upsert at 17:00 IST/converted to UTC)."""
+    """VKYC sync logic (Upsert matched by ARN)."""
     pb_url = frappe.conf.get("pocketbase_url")
     pb_token = frappe.conf.get("pocketbase_auth_token")
-    if not pb_url or not pb_token:
-        frappe.throw(_("Pocketbase connection details missing."))
 
     today_start = f"{getdate()} 00:00:00"
     records = frappe.db.sql("""
@@ -124,74 +121,74 @@ def task_2_update_bkyc_data():
 
 def task_3_sync_activation_data():
     """
-    Task 3: Activation Sync
-    - Filter: APPROVE decision + specific activation status.
-    - Match by arn_no (Upsert).
-    - Time: Forced 12:00:00Z UTC.
+    Task 3: Optimized Activation Sync (BPA Source)
+    - Ranking-based comparison of two status fields.
+    - Conditional Creation (Rank 1 & 2) vs Update Only (Rank 3).
+    - Global latest Adobe Dump date as status date.
     """
     pb_url = frappe.conf.get("pocketbase_url")
     pb_token = frappe.conf.get("pocketbase_auth_token")
 
-    # 1. Fetch Approved Records
-    records = frappe.db.sql("""
-        SELECT employee_name, employee_code, arn_no, customer_name, 
-               mobile_no, decision_month, final_decision_date,
-               adobe_dump_date, card_activation_status
-        FROM `tabAdobe Dump`
-        WHERE LOWER(final_decision) LIKE '%%approve%%'
-    """, as_dict=True)
+    # 1. Fetch Shared Global Data
+    latest_adobe_date = frappe.db.get_value("Adobe Dump", {}, "adobe_dump_date", order_by="adobe_dump_date desc")
+    status_date_str = f"{getdate(latest_adobe_date)} 12:00:00.000Z" if latest_adobe_date else None
+
+    # 2. Fetch BPA Records
+    records = frappe.db.get_all("BPA Records", fields=[
+        "employee_name", "employee_code", "customer_name", "mobile_no", 
+        "arn_no", "decision_month", "decision_date", 
+        "card_activation_status", "activation_status"
+    ])
 
     if not records: return {"count": 0}
 
-    # 2. Status Normalization & Filtering
-    def get_normalized_status(status):
-        if not status: return None
-        s = str(status).strip().upper().replace(" ", "").replace("+", "")
-        if "INACTIVE" in s: return "Inactive"
-        if "VACTIVE" in s: return "V+ Active"
-        return None
+    # 3. Status Ranking Logic
+    def get_status_rank(val):
+        if not val: return 0
+        s = str(val).strip().upper().replace(" ", "").replace("+", "")
+        if "TXNACTIVE" in s: return 3
+        if "VACTIVE" in s: return 2
+        if "INACTIVE" in s: return 1
+        return 0
 
-    # Filter records by normalized status and aging
-    eligible_records = []
-    today_dt = getdate()
-    # Thresholds: 37 days for Inactive, 120 days for V+ Active
-    inactive_threshold = add_days(today_dt, -37)
-    vactive_threshold = add_days(today_dt, -120)
+    canonical_map = {3: "Txn Active", 2: "V+ Active", 1: "Inactive"}
 
-    for r in records:
-        norm_status = get_normalized_status(r.card_activation_status)
-        if not norm_status:
-            continue
-            
-        # Aging Filter Logic: Only actionable records are pushed
-        decision_date = getdate(r.final_decision_date) if r.final_decision_date else None
-        if not decision_date:
-            continue
-            
-        if norm_status == "Inactive" and decision_date < inactive_threshold:
-            continue
-        if norm_status == "V+ Active" and decision_date < vactive_threshold:
-            continue
-
-        r.normalized_status = norm_status
-        eligible_records.append(r)
-
-    if not eligible_records: return {"count": 0}
-
-    # 3. Pocketbase ID Mapping (Upsert Matching by arn_no)
+    # 4. Pocketbase ID Mapping
     pb_records = fetch_pocketbase_ids(pb_url, pb_token, "activation")
     arn_to_pb_id = {r.get("arn_no"): r.get("id") for r in pb_records if r.get("arn_no")}
 
-    # 4. Prepare Batch Requests
+    # 5. Process Matrix
     batch_requests = []
-    for doc in eligible_records:
-        pb_id = arn_to_pb_id.get(doc.arn_no)
-        
-        # User requested 12:00:00 UTC time string specifically
-        def to_utc_12(date_val):
-            if not date_val: return None
-            return f"{getdate(date_val)} 12:00:00.000Z"
+    today_dt = getdate()
+    # Aging Thresholds
+    inactive_threshold = add_days(today_dt, -37)
+    vactive_threshold = add_days(today_dt, -120)
 
+    for doc in records:
+        rank_a = get_status_rank(doc.card_activation_status)
+        rank_b = get_status_rank(doc.activation_status)
+        max_rank = max(rank_a, rank_b)
+
+        if max_rank == 0: continue # Skip Rank 0 completely
+        
+        final_status = canonical_map[max_rank]
+        pb_id = arn_to_pb_id.get(doc.arn_no)
+
+        # Aging Check (Only for creation/standard updates)
+        # Note: Rank 3 (Txn Active) bypasses aging to ensure cleanup
+        if max_rank != 3:
+            dec_date = getdate(doc.decision_date) if doc.decision_date else None
+            if not dec_date: continue
+            if max_rank == 1 and dec_date < inactive_threshold: continue
+            if max_rank == 2 and dec_date < vactive_threshold: continue
+
+        # Action Matrix Rules
+        method = "PATCH" if pb_id else "POST"
+        
+        # Rank 3 Rule: ONLY Update (Skip if not in PB)
+        if max_rank == 3 and not pb_id:
+            continue
+            
         payload = {
             "employee_name": doc.employee_name,
             "employee_code": doc.employee_code,
@@ -199,13 +196,14 @@ def task_3_sync_activation_data():
             "mobile_no": doc.mobile_no,
             "arn_no": doc.arn_no,
             "decision_month": doc.decision_month,
-            "decision_date": to_utc_12(doc.final_decision_date),
-            "bank_status_date": to_utc_12(doc.adobe_dump_date),
-            "bank_status": doc.normalized_status
+            "decision_date": f"{getdate(doc.decision_date)} 12:00:00.000Z" if doc.decision_date else None,
+            "bank_status_date": status_date_str,
+            "bank_status": final_status,
+            "remove_data": True if max_rank == 3 else False
         }
 
         batch_requests.append({
-            "method": "PATCH" if pb_id else "POST",
+            "method": method,
             "url": f"/api/collections/activation/records/{pb_id}" if pb_id else "/api/collections/activation/records",
             "body": payload
         })
@@ -213,7 +211,7 @@ def task_3_sync_activation_data():
     if batch_requests:
         send_pb_batch(pb_url, pb_token, batch_requests)
     
-    return {"count": len(eligible_records)}
+    return {"count": len(batch_requests)}
 
 def fetch_pocketbase_ids(pb_url, pb_token, collection):
     """Retrieves all ids and arn_nos from a collection."""
