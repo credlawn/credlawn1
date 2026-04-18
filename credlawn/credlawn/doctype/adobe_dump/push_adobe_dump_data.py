@@ -151,13 +151,30 @@ def task_3_sync_activation_data():
         if "VACTIVE" in s: return "V+ Active"
         return None
 
-    # Filter records by normalized status
+    # Filter records by normalized status and aging
     eligible_records = []
+    today_dt = getdate()
+    # Thresholds: 37 days for Inactive, 120 days for V+ Active
+    inactive_threshold = add_days(today_dt, -37)
+    vactive_threshold = add_days(today_dt, -120)
+
     for r in records:
         norm_status = get_normalized_status(r.card_activation_status)
-        if norm_status:
-            r.normalized_status = norm_status
-            eligible_records.append(r)
+        if not norm_status:
+            continue
+            
+        # Aging Filter Logic: Only actionable records are pushed
+        decision_date = getdate(r.final_decision_date) if r.final_decision_date else None
+        if not decision_date:
+            continue
+            
+        if norm_status == "Inactive" and decision_date < inactive_threshold:
+            continue
+        if norm_status == "V+ Active" and decision_date < vactive_threshold:
+            continue
+
+        r.normalized_status = norm_status
+        eligible_records.append(r)
 
     if not eligible_records: return {"count": 0}
 
