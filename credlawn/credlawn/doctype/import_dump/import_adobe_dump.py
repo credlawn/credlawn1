@@ -2,7 +2,7 @@ import frappe
 import datetime
 from frappe import _
 from frappe.utils.xlsxutils import read_xlsx_file_from_attached_file
-from frappe.utils import getdate, today
+from frappe.utils import getdate, today, get_datetime
 import math
 
 def parse_date(val):
@@ -46,6 +46,30 @@ def parse_date(val):
     # 3. Fallback to Frappe getdate (handles more complex strings)
     try:
         return getdate(val)
+    except:
+        return None
+
+def parse_vkyc_datetime(val):
+    """
+    Specialized parser for VKYC Expiry Date:
+    - Attempt a full datetime parse using get_datetime.
+    - If the result has no time (00:00:00), fallback to 17:00:00 as requested.
+    """
+    if not val or str(val).strip().upper() in ["", "#N/A", "NA", "N/A", "NULL", "NONE", "NAN"]:
+        return None
+        
+    try:
+        # Handles Excel float (serial) and common date/datetime strings
+        dt = get_datetime(val)
+        if not dt:
+            return None
+            
+        # If the parsing results in 00:00:00, we treat it as "Date Only" 
+        # and apply the 17:00:00 (5 PM) fallback logic as requested.
+        if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
+            dt = dt.replace(hour=17, minute=0, second=0)
+            
+        return dt
     except:
         return None
 
@@ -241,7 +265,9 @@ def execute_import():
                     
                     # Core Date Parsing (Handles Excel Serials and Mixed Formats)
                     if val is not None:
-                        if fname in ["arn_date", "final_decision_date", "dap_final_date", "kyc_completion_date", "kyc_type", "vkyc_expiry_date"]:
+                        if fname == "vkyc_expiry_date":
+                            val = parse_vkyc_datetime(val)
+                        elif fname in ["arn_date", "final_decision_date", "dap_final_date", "kyc_completion_date", "kyc_type"]:
                             val = parse_date(val)
                     
                     if fname == "card_activation_status":

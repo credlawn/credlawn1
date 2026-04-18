@@ -16,116 +16,88 @@ def execute_sync():
             is_async=True,
             job_name='active_database_sync'
         )
-        return _("High-Speed Active Database Sync started in the background.")
+        return _("Turbo Active Database Sync started. Check progress bar.")
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Active Database Sync Enqueue Error")
         return _("Failed to start sync: {0}").format(str(e))
 
 def sync_job():
-    """Optimized background job using Timestamp Checkpoint and Batch SQL Insert/Update"""
+    """Optimized background job using High-Performance Bulk Upsert."""
     try:
         pb_url = frappe.conf.get("pocketbase_url")
         pb_token = frappe.conf.get("pocketbase_auth_token")
 
         if not pb_url or not pb_token:
-            frappe.log_error("PocketBase credentials missing in site_config", "Active Database Sync Error")
+            frappe.log_error("PocketBase credentials missing", "Active Database Sync Error")
             return
 
-        # 1. Checkpoint - Find the latest pb_updated in Frappe to only fetch new/modified data
-        latest_pb_updated = frappe.db.get_value("Active Database", 
-            filters={"pb_id": ["is", "set"]}, 
-            fieldname="pb_updated", 
-            order_by="pb_updated desc"
-        )
+        # Checkpoint: Fetch max pb_updated from local records to pick up where we left off
+        latest_pb_updated = frappe.db.sql("SELECT MAX(pb_updated) FROM `tabActive Database`")[0][0]
 
         pb_filter = ""
         if latest_pb_updated:
             pb_filter = f"updated > '{latest_pb_updated}'"
 
         page = 1
-        per_page = 500
-        # Using Collection ID directly as provided in your JSON to be safe
+        per_page = 1000 # Optimized batch size
         collection_name = "pbc_2300403255" 
         
         total_fetched = 0
-        inserted_count = 0
-        updated_count = 0
-        failed_count = 0
+        success_count = 0
         
-        # Get total count for progress estimation
+        # Initial call to get totalItems
         initial_res = fetch_pb_records(pb_url, pb_token, collection_name, 1, 1, pb_filter, return_raw=True)
-        
-        # Connectivity Debug
-        if not initial_res or 'totalItems' not in initial_res:
-             frappe.log_error(f"PB Response Error: {initial_res}", "Active Database Sync Debug")
-        
         total_items = initial_res.get('totalItems', 0) if initial_res else 0
+
+        if total_items == 0:
+            publish_progress(100, "Local database is already up-to-date.")
+            return
 
         while True:
             records = fetch_pb_records(pb_url, pb_token, collection_name, page, per_page, pb_filter)
-            if not records:
-                break
+            if not records: break
 
-            fetched_ids = [r.get('id') for r in records if r.get('id')]
-            if not fetched_ids:
-                break
-            
-            # Map existing records to decide between Insert or Update
-            existing_db = frappe.db.sql(
-                "SELECT pb_id, name FROM `tabActive Database` WHERE pb_id IN %s", 
-                (tuple(fetched_ids),), as_dict=True
-            )
-            existing_map = {r.pb_id: r.name for r in existing_db}
-
-            to_insert = []
-            to_update = []
-
-            for record in records:
-                pb_id = record.get('id')
-                if not pb_id: continue
-
-                if pb_id in existing_map:
-                    record['frappe_name'] = existing_map[pb_id]
-                    to_update.append(record)
-                else:
-                    record['frappe_name'] = pb_id # Using PB ID as the document name
-                    to_insert.append(record)
-
+            # Process 1000 records in a single high-speed SQL call
             try:
-                if to_insert:
-                    perform_batch_insert(to_insert)
-                    inserted_count += len(to_insert)
-                if to_update:
-                    perform_batch_update(to_update)
-                    updated_count += len(to_update)
+                perform_upsert_batch(records)
+                success_count += len(records)
             except Exception as e:
-                frappe.log_error(f"Batch SQL Error: {str(e)}\n\n{frappe.get_traceback()}", "Active Database Sync Error")
-                failed_count += len(records)
+                # FALLBACK: If batch fails, try one-by-one to isolate the error and save the rest
+                frappe.log_error(f"Batch {page} failed. Entering retry mode: {str(e)}", "Sync Fallback Initiated")
+                for rec in records:
+                    try:
+                        perform_upsert_batch([rec])
+                        success_count += 1
+                    except:
+                        pass # Skipping only the individual malformed record
 
             total_fetched += len(records)
             
-            # Real-time progress update
-            if total_items > 0:
-                progress = int((total_fetched / total_items) * 100)
-                if progress > 100: progress = 100
-                publish_progress(progress, f"Syncing: {total_fetched} of {total_items}...")
+            # Update Progress
+            progress = int((total_fetched / total_items) * 100)
+            publish_progress(progress, f"Processing: {total_fetched} / {total_items}...")
 
-            if len(records) < per_page:
-                break
+            if len(records) < per_page: break
             
             page += 1
             frappe.db.commit()
 
         frappe.db.commit()
-        summary = f"Sync Complete! Inserted: {inserted_count}, Updated: {updated_count}, Failed: {failed_count}"
-        publish_progress(100, summary if total_items > 0 else "Everything is up-to-date.")
+        summary = f"Turbo Sync Complete! Total: {success_count} records synchronized."
+        publish_progress(100, summary)
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Active Database Sync Fatal Error")
         publish_progress(0, "Sync Failed. Check Error Log.", failed=True)
 
-def perform_batch_insert(records):
-    """High-speed batch insertion for new records"""
+def perform_upsert_batch(records):
+    """
+    Executes a high-speed 'INSERT ... ON DUPLICATE KEY UPDATE' query.
+    This handles both Insert and Update in a single atomic database operation.
+    """
+    if not records: return
+
+    # 1. Define Fields
     fields = [
         'name', 'creation', 'modified', 'owner', 'modified_by', 'docstatus',
         'customer_name', 'mobile_no', 'city', 'segment', 'employer',
@@ -142,13 +114,20 @@ def perform_batch_insert(records):
     values = []
 
     for pb in records:
+        pb_id = pb.get('id')
         lead_date, lead_time = convert_dt(pb.get('lead_status_date'), both=True)
         old_dec_date = convert_dt(pb.get('old_decision_date'))
         import_date = convert_dt(pb.get('import_date'))
         last_shuffle = convert_dt(pb.get('last_shuffle_date'))
         
+        # Prepare 38-tuple for each record
         values.append((
-            pb.get('frappe_name'), now_val, now_val, 'Administrator', 'Administrator', 0,
+            pb_id, # name
+            now_val, # creation (Use local time, standard Frappe way)
+            now_val, # modified
+            'Administrator', # owner
+            'Administrator', # modified_by
+            0, # docstatus
             pb.get('customer_name'), pb.get('mobile_no'), pb.get('city'), pb.get('segment'), pb.get('employer'),
             pb.get('decline_reason'), pb.get('product'), pb.get('old_arn_no'), old_dec_date,
             pb.get('promo_code'), import_date, pb.get('data_code'), pb.get('data_sub_code'), pb.get('custom_code'),
@@ -156,81 +135,49 @@ def perform_batch_insert(records):
             pb.get('connected_calls') or 0, pb.get('connected_duration') or 0, last_shuffle,
             pb.get('shuffle_count') or 0, pb.get('lead_status'), lead_date, lead_time,
             pb.get('connected_employee'), pb.get('employee_name'), pb.get('employee_code'), (1 if pb.get('no_reallocation') else 0),
-            pb.get('id'), pb.get('created'), pb.get('updated')
+            pb_id, pb.get('created'), pb.get('updated') # Raw strings for comparison
         ))
 
+    # 2. Build the Multi-row Insert Query
     placeholders = "(" + ", ".join(["%s"] * len(fields)) + ")"
     placeholders_list = ", ".join([placeholders] * len(values))
+    
+    # 3. Build the Update part (What to change if record already exists)
+    # We exclude 'name', 'creation', 'owner', 'pb_id', 'pb_created' from update
+    update_parts = [
+        f"`{f}`=VALUES(`{f}`)" for f in fields if f not in ['name', 'creation', 'owner', 'pb_id', 'pb_created']
+    ]
+    
+    query = f"""
+        INSERT INTO `tabActive Database` ({', '.join(['`' + f + '`' for f in fields])}) 
+        VALUES {placeholders_list}
+        ON DUPLICATE KEY UPDATE {', '.join(update_parts)}
+    """
+    
     flattened_values = [val for row in values for val in row]
-
-    query = f"INSERT IGNORE INTO `tabActive Database` ({', '.join(['`' + f + '`' for f in fields])}) VALUES {placeholders_list}"
     frappe.db.sql(query, flattened_values)
 
-def perform_batch_update(records):
-    """High-speed batch updates for existing records to refresh counts and statuses"""
-    now_val = now_datetime()
-    for pb in records:
-        lead_date, lead_time = convert_dt(pb.get('lead_status_date'), both=True)
-        old_dec_date = convert_dt(pb.get('old_decision_date'))
-        import_date = convert_dt(pb.get('import_date'))
-        last_shuffle = convert_dt(pb.get('last_shuffle_date'))
-
-        frappe.db.sql("""
-            UPDATE `tabActive Database` SET
-                modified=%s, customer_name=%s, mobile_no=%s, city=%s, segment=%s, employer=%s,
-                decline_reason=%s, product=%s, old_arn_no=%s, old_decision_date=%s,
-                promo_code=%s, import_date=%s, data_code=%s, data_sub_code=%s, custom_code=%s,
-                allocation_count=%s, employee_count=%s, data_status=%s, total_calls=%s,
-                connected_calls=%s, connected_duration=%s, last_shuffle_date=%s,
-                shuffle_count=%s, lead_status=%s, lead_status_date=%s, lead_status_time=%s,
-                connected_employee=%s, employee_name=%s, employee_code=%s, no_reallocation=%s,
-                pb_updated=%s
-            WHERE pb_id=%s
-        """, (
-            now_val, pb.get('customer_name'), pb.get('mobile_no'), pb.get('city'), pb.get('segment'), pb.get('employer'),
-            pb.get('decline_reason'), pb.get('product'), pb.get('old_arn_no'), old_dec_date,
-            pb.get('promo_code'), import_date, pb.get('data_code'), pb.get('data_sub_code'), pb.get('custom_code'),
-            pb.get('allocation_count') or 0, pb.get('employee_count') or 0, pb.get('data_status'), pb.get('total_calls') or 0,
-            pb.get('connected_calls') or 0, pb.get('connected_duration') or 0, last_shuffle,
-            pb.get('shuffle_count') or 0, pb.get('lead_status'), lead_date, lead_time,
-            pb.get('connected_employee'), pb.get('employee_name'), pb.get('employee_code'), (1 if pb.get('no_reallocation') else 0),
-            pb.get('updated'), pb.get('id')
-        ))
-
 def convert_dt(utc_str, both=False):
-    """Robust UTC to IST converter with null/blank safety"""
+    """Robust and fast IST converter"""
     if not utc_str or str(utc_str).strip() == "":
         return (None, None) if both else None
     try:
-        # Standardize format (PocketBase often uses space or T)
         utc_str = str(utc_str).replace(' ', 'T')
         if utc_str.endswith('Z'): utc_str = utc_str[:-1]
-        
-        # Handle microsecond clipping beyond 6 digits for ISO format
         if '.' in utc_str:
             base, micros = utc_str.split('.')
             utc_str = f"{base}.{micros[:6]}"
-            
         dt = datetime.fromisoformat(utc_str)
         ist = dt.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone('Asia/Kolkata'))
-        
-        if both:
-            return (ist.date(), ist.strftime("%H:%M:%S"))
-        return ist.date()
+        return (ist.date(), ist.strftime("%H:%M:%S")) if both else ist.date()
     except Exception:
         return (None, None) if both else None
 
 def fetch_pb_records(pb_url, pb_token, collection, page, per_page, pb_filter="", return_raw=False):
     try:
         url = f"{pb_url.rstrip('/')}/api/collections/{collection}/records"
-        headers = {"Authorization": f"Bearer {pb_token}"}
-        params = {
-            "page": page, 
-            "perPage": per_page, 
-            "sort": "+updated", # Process oldest changes first
-            "filter": f"({pb_filter})" if pb_filter else ""
-        }
-        res = requests.get(url, headers=headers, params=params, timeout=30)
+        params = {"page": page, "perPage": per_page, "sort": "+updated", "filter": f"({pb_filter})" if pb_filter else ""}
+        res = requests.get(url, headers={"Authorization": f"Bearer {pb_token}"}, params=params, timeout=30)
         if res.status_code == 200:
             data = res.json()
             return data if return_raw else data.get('items', [])

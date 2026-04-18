@@ -178,53 +178,5 @@ def parse_arn_full(arn_no):
         pass
     return None, None, False
 
-@frappe.whitelist()
-def one_time_legacy_sync():
-    """Heals existing records by populating PB and Active Database values without Truncate."""
-    try:
-        # 1. Fetch All IP Approved records from PocketBase in one go (Memory Map)
-        pb_url = frappe.conf.get("pocketbase_url")
-        pb_token = frappe.conf.get("pocketbase_auth_token")
-        if not pb_url or not pb_token: return "Pocketbase Config Missing"
-        
-        api_url = f"{pb_url.rstrip('/')}/api/collections/case_login/records"
-        headers = {"Authorization": f"Bearer {pb_token}"}
-        
-        # Get all approved items (assuming volume is manageable for one-time fetch)
-        res = requests.get(api_url, headers=headers, params={"filter": '(lead_status="IP Approved")', "perPage": 5000}, timeout=60).json()
-        pb_items = res.get("items", [])
-        
-        # Build ARN -> PB Item Map
-        pb_map = {item.get("arn_no").upper(): item for item in pb_items if item.get("arn_no")}
-        
-        # 2. Get local records that need healing
-        targets = frappe.get_all("IPA Records", filters={"pb_id": ["is", "not set"]}, fields=["name", "arn_no", "mobile_no"])
-        
-        count = 0
-        for doc in targets:
-            arn = doc.arn_no.upper() if doc.arn_no else ""
-            pb_item = pb_map.get(arn)
-            
-            if pb_item:
-                # Get existing doc and trigger validate (which handles Gap/Enrichment)
-                obj = frappe.get_doc("IPA Records", doc.name)
-                obj.pb_id = pb_item.get("id")
-                obj.pb_created = pb_item.get("created")
-                obj.pb_updated = pb_item.get("updated")
-                
-                # Flag to ignore PB push during healing
-                obj.flags.ignore_pb_sync = True
-                obj.save(ignore_permissions=True)
-                count += 1
-            
-            if count % 50 == 0:
-                frappe.db.commit()
-
-        return f"Successfully healed {count} records."
-
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Legacy Sync Error")
-        return f"Error: {str(e)}"
-
 def publish_progress(percentage, message, failed=False):
     frappe.publish_realtime("ipa_sync_progress", {"percentage": percentage, "message": message, "failed": failed})

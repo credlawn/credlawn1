@@ -54,25 +54,6 @@ frappe.listview_settings['IPA Records'] = {
             });
         }, __('Task'));
 
-        listview.page.add_inner_button(__('Legacy Sync'), function () {
-            frappe.confirm(
-                __('Are you sure you want to heal legacy data? This will populate PB_ID and Active Database values for existing records based on ARN No.'),
-                function () {
-                    frappe.show_progress(__('Healing Data'), 0, 100, __('Searching matches...'));
-                    frappe.call({
-                        method: 'credlawn.credlawn.doctype.ipa_records.pull_ipa_code.one_time_legacy_sync',
-                        callback: function (r) {
-                            frappe.hide_progress();
-                            if (r.message) {
-                                frappe.msgprint(r.message);
-                                listview.refresh();
-                            }
-                        }
-                    });
-                }
-            );
-        }, __('Task'));
-
         listview.page.add_inner_button(__('Truncate'), function () {
             frappe.prompt([
                 {

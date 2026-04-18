@@ -51,6 +51,42 @@ frappe.listview_settings['Attendance'] = {
             );
         });
 
+        listview.page.add_inner_button(__('Approve Atn'), function () {
+            frappe.prompt([
+                {
+                    label: __('Select Payroll Month'),
+                    fieldname: 'payroll_month',
+                    fieldtype: 'Data',
+                    default: (function() {
+                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        const d = new Date();
+                        return monthNames[d.getMonth()] + "-" + d.getFullYear().toString().slice(-2);
+                    })(),
+                    description: __('Enter Month in MMM-YY format (e.g., Apr-26)'),
+                    reqd: 1
+                }
+            ], (values) => {
+                frappe.confirm(
+                    __('Bulk update approved_status for {0}? (Records with approval_type "Manager" will be skipped).', [values.payroll_month]),
+                    function() {
+                        frappe.call({
+                            method: 'credlawn.credlawn.doctype.attendance.bulk_approve.execute_approval',
+                            args: {
+                                payroll_month: values.payroll_month
+                            },
+                            freeze: true,
+                            callback: function (r) {
+                                if (r.message) {
+                                    frappe.msgprint(r.message);
+                                    listview.refresh();
+                                }
+                            }
+                        });
+                    }
+                );
+            }, __('Bulk Auto-Approval'), __('Start Processing'));
+        });
+
         // Administrative Buttons (Under "Task" Menu)
         listview.page.add_inner_button(__('Mark to Archive'), function () {
             frappe.confirm(
