@@ -122,11 +122,6 @@ INSERT_FIELDS = [
     "update_error",
 ]
 
-INSERT_SQL = """INSERT INTO `tabIPA Records` ({cols}) VALUES ({vals})""".format(
-    cols=", ".join(f"`{f}`" for f in INSERT_FIELDS),
-    vals=", ".join(["%s"] * len(INSERT_FIELDS)),
-)
-
 UPDATE_SQL = """UPDATE `tabIPA Records` SET
     pb_created = %s, pb_updated = %s,
     customer_name = %s, mobile_no = %s, employee_name = %s, employee_code = %s,
@@ -138,39 +133,48 @@ WHERE name = %s"""
 
 
 def _bulk_insert_records(records):
-    values = []
-    for r in records:
-        values.append((
-            r["pb_id"], r["pb_created"], r["pb_updated"],
-            r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
-            r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
-            r["arn_date"], r["arn_month"], r["unique"],
-            r["data_code"], r["custom_code"], r["old_arn_no"], r["old_decision_date"], r["gap"],
-            0,
-        ))
+    num_fields = len(INSERT_FIELDS)
+    cols = ", ".join(f"`{f}`" for f in INSERT_FIELDS)
 
-    for i in range(0, len(values), BATCH_SIZE):
-        batch = values[i:i + BATCH_SIZE]
-        frappe.db.begin()
+    for i in range(0, len(records), BATCH_SIZE):
+        batch = records[i:i + BATCH_SIZE]
+        flat_values = []
+        for r in batch:
+            flat_values.extend((
+                r["pb_id"], r["pb_created"], r["pb_updated"],
+                r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
+                r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
+                r["arn_date"], r["arn_month"], r["unique"],
+                r["data_code"], r["custom_code"], r["old_arn_no"], r["old_decision_date"], r["gap"],
+                0,
+            ))
+
+        row_placeholders = ", ".join(
+            ["(" + ", ".join(["%s"] * num_fields) + ")"] * len(batch)
+        )
+        sql = f"INSERT INTO `tabIPA Records` ({cols}) VALUES {row_placeholders}"
+
         try:
-            frappe.db.sql(INSERT_SQL, batch)
-            frappe.db.commit()
+            frappe.db.sql(sql, flat_values)
         except Exception:
-            frappe.db.rollback()
-            for row in batch:
-                frappe.db.begin()
+            fallback_sql = f"INSERT INTO `tabIPA Records` ({cols}) VALUES ({', '.join(['%s'] * num_fields)})"
+            for r in batch:
                 try:
-                    frappe.db.sql(INSERT_SQL, [row])
-                    frappe.db.commit()
+                    frappe.db.sql(fallback_sql, (
+                        r["pb_id"], r["pb_created"], r["pb_updated"],
+                        r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
+                        r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
+                        r["arn_date"], r["arn_month"], r["unique"],
+                        r["data_code"], r["custom_code"], r["old_arn_no"], r["old_decision_date"], r["gap"],
+                        0,
+                    ))
                 except Exception:
-                    frappe.db.rollback()
-                    frappe.log_error(frappe.get_traceback(), f"IPA Sync: Insert Error pb_id={row[0]}")
+                    frappe.log_error(frappe.get_traceback(), f"IPA Sync: Insert Error pb_id={r['pb_id']}")
 
 
 def _bulk_update_records(records):
     for i in range(0, len(records), BATCH_SIZE):
         batch = records[i:i + BATCH_SIZE]
-        frappe.db.begin()
         for doc_name, r in batch:
             try:
                 frappe.db.sql(UPDATE_SQL, (
@@ -184,7 +188,6 @@ def _bulk_update_records(records):
                 ))
             except Exception:
                 frappe.log_error(frappe.get_traceback(), f"IPA Sync: Update Error {doc_name}")
-        frappe.db.commit()
 
 
 def run_smart_sync():
