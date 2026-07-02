@@ -133,14 +133,11 @@ WHERE name = %s"""
 
 
 def _bulk_insert_records(records):
-    num_fields = len(INSERT_FIELDS)
-    cols = ", ".join(f"`{f}`" for f in INSERT_FIELDS)
-
     for i in range(0, len(records), BATCH_SIZE):
         batch = records[i:i + BATCH_SIZE]
-        flat_values = []
+        values = []
         for r in batch:
-            flat_values.extend((
+            values.append((
                 r["pb_id"], r["pb_created"], r["pb_updated"],
                 r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
                 r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
@@ -149,25 +146,19 @@ def _bulk_insert_records(records):
                 0,
             ))
 
-        row_placeholders = ", ".join(
-            ["(" + ", ".join(["%s"] * num_fields) + ")"] * len(batch)
-        )
-        sql = f"INSERT INTO `tabIPA Records` ({cols}) VALUES {row_placeholders}"
-
         try:
-            frappe.db.sql(sql, flat_values)
+            frappe.db.bulk_insert("IPA Records", INSERT_FIELDS, values)
         except Exception:
-            fallback_sql = f"INSERT INTO `tabIPA Records` ({cols}) VALUES ({', '.join(['%s'] * num_fields)})"
             for r in batch:
                 try:
-                    frappe.db.sql(fallback_sql, (
+                    frappe.db.bulk_insert("IPA Records", INSERT_FIELDS, [(
                         r["pb_id"], r["pb_created"], r["pb_updated"],
                         r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
                         r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
                         r["arn_date"], r["arn_month"], r["unique"],
                         r["data_code"], r["custom_code"], r["old_arn_no"], r["old_decision_date"], r["gap"],
                         0,
-                    ))
+                    )])
                 except Exception:
                     frappe.log_error(frappe.get_traceback(), f"IPA Sync: Insert Error pb_id={r['pb_id']}")
 
