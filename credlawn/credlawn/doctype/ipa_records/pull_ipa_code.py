@@ -1,7 +1,7 @@
 import frappe
 import requests
 from frappe import _
-from frappe.utils import getdate, date_diff
+from frappe.utils import getdate, date_diff, now_datetime
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
@@ -113,7 +113,9 @@ def _process_item(item, enrichment_map):
     }
 
 
-INSERT_FIELDS = [
+SYSTEM_FIELDS = ["name", "creation", "modified", "modified_by", "owner", "docstatus"]
+
+INSERT_FIELDS = SYSTEM_FIELDS + [
     "pb_id", "pb_created", "pb_updated",
     "customer_name", "mobile_no", "employee_name", "employee_code",
     "ip_status", "arn_no", "login_date", "date_of_birth",
@@ -133,11 +135,15 @@ WHERE name = %s"""
 
 
 def _bulk_insert_records(records):
+    now_val = now_datetime()
+    user = frappe.session.user
+
     for i in range(0, len(records), BATCH_SIZE):
         batch = records[i:i + BATCH_SIZE]
         values = []
         for r in batch:
             values.append((
+                frappe.generate_hash("", 10), now_val, now_val, user, user, 0,
                 r["pb_id"], r["pb_created"], r["pb_updated"],
                 r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
                 r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
@@ -152,6 +158,7 @@ def _bulk_insert_records(records):
             for r in batch:
                 try:
                     frappe.db.bulk_insert("IPA Records", INSERT_FIELDS, [(
+                        frappe.generate_hash("", 10), now_val, now_val, user, user, 0,
                         r["pb_id"], r["pb_created"], r["pb_updated"],
                         r["customer_name"], r["mobile_no"], r["employee_name"], r["employee_code"],
                         r["ip_status"], r["arn_no"], r["login_date"], r["date_of_birth"],
