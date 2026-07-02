@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Credlawn - India's Premier Credit Card Distributor{% endblock %}</title>
+    <meta name="description" content="{% block description %}Credlawn is your trusted partner for financial growth. India's largest network for premium credit cards and exclusive DSA partnerships.{% endblock %}">
+    
+    <!-- Open Graph SEO -->
+    <meta property="og:title" content="Credlawn - Premier Fintech Platform">
+    <meta property="og:description" content="India's leading network for prompt credit card approvals and distributions.">
+    <meta property="og:type" content="website">
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core Design System -->
+    <!-- Frappe automatically routes public/css/ to /assets/app_name/css/ -->
+    <link rel="stylesheet" href="/assets/credlawn/css/credlawn_web.css">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Professional Navbar -->
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="/" class="brand-logo">
+                <span style="color: var(--c-primary-dark);">Cred</span>lawn
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/partner">Partner with Us</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="/contact" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content Injection -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Premium Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="grid grid-cols-4 gap-8">
+                <!-- Brand Info -->
+                <div class="footer-col" style="grid-column: span 1;">
+                    <div class="footer-logo">Credlawn</div>
+                    <p class="text-muted" style="margin-bottom: 20px;">
+                        Transforming the way India accesses credit. Your smart, transparent, and blazing fast credit card distribution network.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="footer-col footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/lending-partners">Lending Partners</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources -->
+                <div class="footer-col footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/emi-calculator">EMI Calculator</a></li>
+                        <li><a href="/free-credit-score">Free Credit Score</a></li>
+                        <li><a href="/partner">Become a DSA</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-col footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:support@credlawn.in">support@credlawn.in</a></li>
+                        <li><a href="/contact">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Credlawn Fintech. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block script %}{% endblock %}
+</body>
+</html>

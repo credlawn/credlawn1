@@ -137,7 +137,7 @@ def task_3_sync_activation_data():
     records = frappe.db.get_all("BPA Records", fields=[
         "employee_name", "employee_code", "customer_name", "mobile_no", 
         "arn_no", "decision_month", "decision_date", 
-        "card_activation_status", "activation_status"
+        "card_activation_status", "activation_status", "product"
     ])
 
     if not records: return {"count": 0}
@@ -195,6 +195,7 @@ def task_3_sync_activation_data():
             "customer_name": doc.customer_name,
             "mobile_no": doc.mobile_no,
             "arn_no": doc.arn_no,
+            "product": doc.product or "",
             "decision_month": doc.decision_month,
             "decision_date": f"{getdate(doc.decision_date)} 12:00:00.000Z" if doc.decision_date else None,
             "bank_status_date": status_date_str,

@@ -47,6 +47,7 @@ def run_smart_sync():
         malformed_arns = []
         
         first_resp = requests.get(api_url, headers=headers, params={"filter": pb_filter, "perPage": 1}, timeout=30)
+        first_resp.raise_for_status()
         total_to_sync = first_resp.json().get("totalItems", 0)
 
         if total_to_sync == 0:
@@ -54,7 +55,9 @@ def run_smart_sync():
             return
 
         while True:
-            res = requests.get(api_url, headers=headers, params={"filter": pb_filter, "page": page, "perPage": per_page, "sort": "updated"}, timeout=30).json()
+            res = requests.get(api_url, headers=headers, params={"filter": pb_filter, "page": page, "perPage": per_page, "sort": "updated"}, timeout=30)
+            res.raise_for_status()
+            res = res.json()
             items = res.get("items", [])
             if not items: break
 
